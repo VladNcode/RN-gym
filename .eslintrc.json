@@ -52,6 +52,12 @@
     "@typescript-eslint/no-var-requires": "off",
     "import/extensions": "off",
     "import/prefer-default-export": "off",
-    "react/no-unstable-nested-components": "off"
+    "react/no-unstable-nested-components": "off",
+    "react-hooks/exhaustive-deps": [
+      "warn",
+      {
+        "additionalHooks": "(useRecoilCallback|useRecoilTransaction_UNSTABLE)"
+      }
+    ]
   }
 }

@@ -1,14 +1,16 @@
-import 'react-native-gesture-handler';
-
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import 'react-native-gesture-handler';
+import { useRecoilState } from 'recoil';
 
 import { CustomDrawerContent } from './components';
 import { CustomDrawerContentType, RootDrawerParamsList, RootStackParamsList, RootTabParamsList } from './constants';
 import { Onboarding, SignIn, SignUp } from './screens';
+import { userState } from './store/user';
 
 const Stack = createStackNavigator<RootStackParamsList>();
 const Drawer = createDrawerNavigator<RootDrawerParamsList>();
@@ -50,9 +52,29 @@ const AddTask = () => {
 };
 
 export const Routes = React.memo(() => {
-  const [loggedIn] = useState(false);
+  const [initializing, setInitializing] = useState(true);
+  const [userData, setUserData] = useRecoilState(userState);
 
-  if (loggedIn) {
+  const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
+    setUserData(user);
+
+    if (initializing) {
+      setInitializing(false);
+    }
+  };
+
+  useEffect(() => {
+    return auth().onAuthStateChanged(onAuthStateChanged); // unsubscribe on unmount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    return auth().onUserChanged(user => {
+      setUserData(user);
+    });
+  }, [setUserData]);
+
+  if (userData && userData.displayName) {
     const Tabs = () => (
       <Tab.Navigator screenOptions={{ tabBarShowLabel: false, headerShown: false }}>
         <Tab.Screen

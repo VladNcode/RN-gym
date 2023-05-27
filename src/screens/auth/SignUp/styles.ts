@@ -36,4 +36,5 @@ export const styles = StyleSheet.create({
     backgroundColor: COLOR_SCHEME.blue,
     marginTop: 24,
   },
+  checkboxError: { color: 'red', marginTop: 6 },
 });

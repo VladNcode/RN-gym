@@ -1,5 +1,6 @@
 import auth from '@react-native-firebase/auth';
 import React, { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { Alert, Linking, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { Checkbox, CustomButton, FooterLink, Input, Title } from '../../../components';
@@ -11,34 +12,31 @@ import {
 } from '../../../constants';
 import { styles } from './styles';
 
-interface SignUpState {
+type SignUpState = {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
-}
-
-const fieldValuesMap: Record<keyof SignUpState, string> = {
-  firstName: 'First name',
-  lastName: 'Last name',
-  email: 'Email',
-  password: 'Password',
-  confirmPassword: 'Confirm password',
 };
-
-const initialValues: SignUpState = { lastName: '', firstName: '', email: '', password: '', confirmPassword: '' };
 
 export const SignUp = React.memo(({ navigation }: { navigation: SignUpNavigationProp }) => {
   const [agreed, setAgreed] = useState(false);
-  const [state, setState] = useState<SignUpState>({ ...initialValues });
-  const [errors, setErrors] = useState<SignUpState>({ ...initialValues });
 
-  const onChange = (key: string) => (value: string) => {
-    setState(s => {
-      return { ...s, [key]: value };
-    });
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitted },
+    watch,
+  } = useForm<SignUpState>({
+    defaultValues: {
+      lastName: '',
+      firstName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
 
   const navigateToSignIn = () => {
     navigation.navigate('SignIn');
@@ -48,43 +46,13 @@ export const SignUp = React.memo(({ navigation }: { navigation: SignUpNavigation
     Linking.openURL(url);
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: SignUpState) => {
     try {
-      let error = false;
+      const result = await auth().createUserWithEmailAndPassword(data.email, data.password);
 
-      Object.keys(state).forEach(key => {
-        if (!state[key as keyof typeof state]) {
-          setErrors(errs => ({
-            ...errs,
-            [key]: `${fieldValuesMap[key as keyof SignUpState]} is a required field`,
-          }));
-          error = true;
-        } else {
-          setErrors(errs => ({ ...errs, [key]: '' }));
-        }
+      await result.user.updateProfile({
+        displayName: `${data.firstName} ${data.lastName}`,
       });
-
-      if (error) {
-        return;
-      }
-
-      if (state.password !== state.confirmPassword) {
-        Alert.alert('Passwords do not match');
-        return;
-      }
-
-      if (!agreed) {
-        Alert.alert('You need to agree to the Terms of Service and Privacy Policy');
-        return;
-      }
-
-      if (state.password === state.confirmPassword && agreed) {
-        const result = await auth().createUserWithEmailAndPassword(state.email, state.password);
-
-        await result.user.updateProfile({
-          displayName: `${state.firstName} ${state.lastName}`,
-        });
-      }
     } catch (err) {
       if (isFirebaseSignUpError(err)) {
         if (err.code === 'auth/email-already-in-use') {
@@ -109,38 +77,100 @@ export const SignUp = React.memo(({ navigation }: { navigation: SignUpNavigation
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Title text="Join the hub!" />
+        <Title text="Join the club!" />
 
-        <View style={styles.inputsContainer}>
-          <Input errorText={errors.firstName} onChangeText={onChange('firstName')} placeholder="First Name" />
-          <Input
-            errorText={errors.lastName}
-            onChangeText={onChange('lastName')}
-            style={styles.input}
-            placeholder="Last Name"
-          />
-          <Input
-            errorText={errors.email}
-            onChangeText={onChange('email')}
-            style={styles.input}
-            keyboardType="email-address"
-            placeholder="Email"
-          />
-          <Input
-            errorText={errors.password}
-            onChangeText={onChange('password')}
-            style={styles.input}
-            secureTextEntry
-            placeholder="Password"
-          />
-          <Input
-            errorText={errors.confirmPassword}
-            onChangeText={onChange('confirmPassword')}
-            style={styles.input}
-            secureTextEntry
-            placeholder="Confirm Password"
-          />
-        </View>
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              style={styles.input}
+              placeholder="First name"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              errorText={errors.firstName && isSubmitted && 'This field is required'}
+            />
+          )}
+          name="firstName"
+        />
+
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              style={styles.input}
+              placeholder="Last name"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              errorText={errors.lastName && isSubmitted && 'This field is required'}
+            />
+          )}
+          name="lastName"
+        />
+        <Controller
+          control={control}
+          rules={{ required: true, pattern: /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,10}\b$/i }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              keyboardType="email-address"
+              style={styles.input}
+              placeholder="Email"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              errorText={
+                errors.email &&
+                isSubmitted &&
+                (errors.email?.type === 'pattern' ? 'Invalid email' : 'This field is required')
+              }
+            />
+          )}
+          name="email"
+        />
+        <Controller
+          control={control}
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              secureTextEntry
+              style={styles.input}
+              placeholder="Password"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              errorText={errors.password && isSubmitted && 'This field is required'}
+            />
+          )}
+          name="password"
+        />
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+            validate: (val: string) => {
+              if (watch('password') !== val) {
+                return 'Your passwords do no match';
+              }
+            },
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              secureTextEntry
+              style={styles.input}
+              placeholder="Confirm password"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              errorText={
+                errors.confirmPassword && isSubmitted && (errors.confirmPassword?.message || 'This field is required')
+              }
+            />
+          )}
+          name="confirmPassword"
+        />
 
         <View style={styles.checkboxContainer}>
           <Checkbox checked={agreed} setChecked={setAgreed} />
@@ -156,9 +186,12 @@ export const SignUp = React.memo(({ navigation }: { navigation: SignUpNavigation
             </TouchableOpacity>
           </View>
         </View>
+        {isSubmitted && !agreed && (
+          <Text style={styles.checkboxError}>Must agree to the Terms of Service and Privacy Policy</Text>
+        )}
 
-        <CustomButton style={styles.button} onPress={onSubmit}>
-          Create account
+        <CustomButton style={styles.button} onPress={handleSubmit(onSubmit)}>
+          Submit
         </CustomButton>
 
         <FooterLink text="Already registered?" linkText="Sign in!" onPress={navigateToSignIn} />

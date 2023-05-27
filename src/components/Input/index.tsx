@@ -6,7 +6,7 @@ import { styles } from './styles';
 
 interface InputProps extends TextInputProps {
   style?: ViewStyle;
-  errorText?: string;
+  errorText?: string | boolean;
   placeholder?: string;
   onChangeText?: (text: string) => void;
   type?: 'outlined';
@@ -40,7 +40,7 @@ export const Input = React.memo(
           placeholder={placeholder}
           {...rest}
         />
-        {errorText && <Text style={styles.errorText}>{errorText}</Text>}
+        {errorText && typeof errorText === 'string' && <Text style={styles.errorText}>{errorText}</Text>}
       </ScrollView>
     );
   },

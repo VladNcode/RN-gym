@@ -1,3 +1,4 @@
+import auth from '@react-native-firebase/auth';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
 import React from 'react';
 import { Linking, Text, TouchableOpacity } from 'react-native';
@@ -7,7 +8,7 @@ import { styles } from './styles';
 
 export const CustomDrawerContent = React.memo((props: CustomDrawerContentType) => {
   const logout = () => {
-    console.log('logout');
+    auth().signOut();
   };
 
   const { navigation } = props;

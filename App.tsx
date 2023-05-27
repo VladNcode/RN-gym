@@ -1,6 +1,6 @@
-import 'react-native-gesture-handler';
-
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import 'react-native-gesture-handler';
+import { RecoilRoot } from 'recoil';
 
 import { Routes } from './src/Routes';
 import { COLOR_SCHEME } from './src/constants';
@@ -15,9 +15,11 @@ const theme = {
 
 function App(): JSX.Element {
   return (
-    <NavigationContainer theme={theme}>
-      <Routes />
-    </NavigationContainer>
+    <RecoilRoot>
+      <NavigationContainer theme={theme}>
+        <Routes />
+      </NavigationContainer>
+    </RecoilRoot>
   );
 }
 
