@@ -22,8 +22,8 @@ export const CustomDrawerContent = React.memo((props: CustomDrawerContentType) =
       <TouchableOpacity onPress={() => navigation.navigate('Home')}>
         <Text style={styles.link}>Home</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Tasks')}>
-        <Text style={styles.link}>Tasks</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('TrainersScreen')}>
+        <Text style={styles.link}>Trainers</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => onLinkPress(PRIVACY_POLICY_LINK)}>
         <Text style={styles.link}>Privacy policy</Text>

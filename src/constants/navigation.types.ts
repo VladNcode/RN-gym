@@ -4,11 +4,27 @@ import { DrawerContentComponentProps } from '@react-navigation/drawer/lib/typesc
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
+import { Trainer } from '../screens/app/Trainers/types';
+
 export type RootStackParamsList = {
   Onboarding: undefined;
   SignIn: undefined;
   SignUp: undefined;
 };
+
+export type TrainersStackParamsList = {
+  CategoriesSelect: undefined;
+  TrainersSelect: { category: number };
+  TrainerDetails: { trainer: Trainer };
+};
+
+export type CategoriesSelectNavigationProp = StackNavigationProp<TrainersStackParamsList, 'CategoriesSelect'>;
+
+export type TrainersSelectRoute = RouteProp<TrainersStackParamsList, 'TrainersSelect'>;
+export type TrainersSelectNavigationProp = StackNavigationProp<TrainersStackParamsList, 'TrainersSelect'>;
+
+export type TrainerDetailsRoute = RouteProp<TrainersStackParamsList, 'TrainerDetails'>;
+export type TrainerDetailsNavigationProp = StackNavigationProp<TrainersStackParamsList, 'TrainerDetails'>;
 
 export type RootDrawerParamsList = {
   Tabs: undefined;
@@ -17,7 +33,7 @@ export type RootDrawerParamsList = {
 
 export type RootTabParamsList = {
   Home: undefined;
-  Tasks: undefined;
+  TrainersScreen: undefined;
 };
 
 export type OnboardingNavigationProp = StackNavigationProp<RootStackParamsList, 'Onboarding'>;

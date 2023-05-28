@@ -8,11 +8,21 @@ import 'react-native-gesture-handler';
 import { useRecoilState } from 'recoil';
 
 import { CustomDrawerContent } from './components';
-import { CustomDrawerContentType, RootDrawerParamsList, RootStackParamsList, RootTabParamsList } from './constants';
+import {
+  CustomDrawerContentType,
+  RootDrawerParamsList,
+  RootStackParamsList,
+  RootTabParamsList,
+  TrainersStackParamsList,
+} from './constants';
 import { Onboarding, SignIn, SignUp } from './screens';
+import CategoriesSelect from './screens/app/Trainers/CategorySelect';
+import TrainerDetails from './screens/app/Trainers/TrainerDetails';
+import TrainersSelect from './screens/app/Trainers/TrainersSelect';
 import { userState } from './store/user';
 
 const Stack = createStackNavigator<RootStackParamsList>();
+const StackTrainers = createStackNavigator<TrainersStackParamsList>();
 const Drawer = createDrawerNavigator<RootDrawerParamsList>();
 const Tab = createBottomTabNavigator<RootTabParamsList>();
 
@@ -31,14 +41,6 @@ const Home = () => {
   return (
     <View style={styles.tempStyle}>
       <Text>Home Screen</Text>
-    </View>
-  );
-};
-
-const Tasks = () => {
-  return (
-    <View style={styles.tempStyle}>
-      <Text>Tasks Screen</Text>
     </View>
   );
 };
@@ -75,6 +77,14 @@ export const Routes = React.memo(() => {
   }, [setUserData]);
 
   if (userData && userData.displayName) {
+    const Trainers = () => (
+      <StackTrainers.Navigator screenOptions={{ headerShown: false }}>
+        <StackTrainers.Screen name="CategoriesSelect" component={CategoriesSelect} />
+        <StackTrainers.Screen name="TrainersSelect" component={TrainersSelect} />
+        <StackTrainers.Screen name="TrainerDetails" component={TrainerDetails} />
+      </StackTrainers.Navigator>
+    );
+
     const Tabs = () => (
       <Tab.Navigator screenOptions={{ tabBarShowLabel: false, headerShown: false }}>
         <Tab.Screen
@@ -90,8 +100,8 @@ export const Routes = React.memo(() => {
           }}
         />
         <Tab.Screen
-          name="Tasks"
-          component={Tasks}
+          name="TrainersScreen"
+          component={Trainers}
           options={{
             tabBarIcon: ({ focused }) => (
               <Image
