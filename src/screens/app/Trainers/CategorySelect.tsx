@@ -4,30 +4,40 @@ import { FlatList } from 'react-native-gesture-handler';
 import { CategoriesSelectNavigationProp } from '../../../constants';
 
 const styles = StyleSheet.create({
-  appContainer: {
+  container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 50,
+    padding: 24,
+    backgroundColor: '#F7F7F7',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
+    textAlign: 'center',
+    marginVertical: 16,
+    color: '#333',
   },
-  scrollContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
+  list: {
+    paddingHorizontal: 16,
   },
-  categoryButton: {
-    backgroundColor: '#ccc',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
+  button: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
-  categoryButtonText: {
-    fontSize: 18,
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
   },
 });
 
@@ -35,20 +45,17 @@ const CategoriesSelect = ({ navigation }: { navigation: CategoriesSelectNavigati
   const categories = [1, 2, 3, 4, 5];
 
   return (
-    <View style={styles.appContainer}>
-      <Text style={styles.title}>Trainers</Text>
-
+    <View style={styles.container}>
       <FlatList
-        style={styles.scrollContainer}
         data={categories}
         renderItem={({ item: category }) => (
           <TouchableOpacity
             key={category}
-            style={styles.categoryButton}
+            style={styles.button}
             onPress={() => {
               navigation.navigate('TrainersSelect', { category });
             }}>
-            <Text style={styles.categoryButtonText}>Category {category}</Text>
+            <Text style={styles.buttonText}>Category {category}</Text>
           </TouchableOpacity>
         )}
       />

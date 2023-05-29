@@ -16,6 +16,7 @@ import {
   TrainersStackParamsList,
 } from './constants';
 import { Onboarding, SignIn, SignUp } from './screens';
+import Home from './screens/app/Home/Home';
 import CategoriesSelect from './screens/app/Trainers/CategorySelect';
 import TrainerDetails from './screens/app/Trainers/TrainerDetails';
 import TrainersSelect from './screens/app/Trainers/TrainersSelect';
@@ -36,14 +37,6 @@ const styles = StyleSheet.create({
   },
   tempStyle: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });
-
-const Home = () => {
-  return (
-    <View style={styles.tempStyle}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-};
 
 const AddTask = () => {
   return (
@@ -78,10 +71,14 @@ export const Routes = React.memo(() => {
 
   if (userData && userData.displayName) {
     const Trainers = () => (
-      <StackTrainers.Navigator screenOptions={{ headerShown: false }}>
-        <StackTrainers.Screen name="CategoriesSelect" component={CategoriesSelect} />
-        <StackTrainers.Screen name="TrainersSelect" component={TrainersSelect} />
-        <StackTrainers.Screen name="TrainerDetails" component={TrainerDetails} />
+      <StackTrainers.Navigator screenOptions={{ headerBackTitle: 'Back', title: 'Trainers' }}>
+        <StackTrainers.Screen
+          name="CategoriesSelect"
+          component={CategoriesSelect}
+          options={{ title: 'Trainers categories' }}
+        />
+        <StackTrainers.Screen name="TrainersSelect" component={TrainersSelect} options={{ title: 'Trainers' }} />
+        <StackTrainers.Screen name="TrainerDetails" component={TrainerDetails} options={{ title: 'Trainer' }} />
       </StackTrainers.Navigator>
     );
 
