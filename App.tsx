@@ -1,29 +1,30 @@
-import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import 'react-native-gesture-handler';
 import { RecoilRoot } from 'recoil';
 
-import { TamaguiProvider } from 'tamagui';
+import * as eva from '@eva-design/eva';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
 
 import { Routes } from './src/Routes';
-import { COLOR_SCHEME } from './src/constants';
-import config from './tamagui.config';
 
-const theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: COLOR_SCHEME.lightGray2,
-  },
-};
+// const theme = {
+//   ...DefaultTheme,
+//   colors: {
+//     ...DefaultTheme.colors,
+//     background: COLOR_SCHEME.lightGray2,
+//   },
+// };
 
 function App(): JSX.Element {
   return (
     <RecoilRoot>
-      <TamaguiProvider config={config}>
-        <NavigationContainer theme={theme}>
+      <IconRegistry icons={EvaIconsPack} />
+      <ApplicationProvider {...eva} theme={eva.light}>
+        <NavigationContainer>
           <Routes />
         </NavigationContainer>
-      </TamaguiProvider>
+      </ApplicationProvider>
     </RecoilRoot>
   );
 }

@@ -1,49 +1,26 @@
-import { FlatList, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { ImageProps, SafeAreaView, StyleSheet } from 'react-native';
+
+import {
+  Avatar,
+  Button,
+  Divider,
+  Icon,
+  List,
+  ListItem,
+  TopNavigation,
+  TopNavigationAction,
+  useTheme,
+} from '@ui-kitten/components';
 
 import { TrainersSelectNavigationProp, TrainersSelectRoute } from '../../../constants';
 import { Trainer } from './types';
 
 const styles = StyleSheet.create({
   container: {
-    margin: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  imageContainer: {
-    marginRight: 10,
-  },
-  trainerItem: {
-    marginTop: 10,
-  },
-  image: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-  },
-  infoContainer: {
     flex: 1,
   },
-  name: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  specialties: {
-    fontStyle: 'italic',
-    marginBottom: 5,
-  },
-  rating: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  ratingText: {
-    marginLeft: 5,
-    fontSize: 16,
-  },
-  scrollContainer: {
-    paddingHorizontal: 20,
-    marginTop: 20,
+  itemImage: {
+    tintColor: undefined,
   },
 });
 
@@ -115,36 +92,58 @@ interface TrainersSelectNavigationProps {
   navigation: TrainersSelectNavigationProp;
 }
 
+const BackIcon = (props: Partial<ImageProps> | undefined) => <Icon {...props} name="arrow-back" />;
+
 const TrainersSelect = ({ navigation, route }: TrainersSelectNavigationProps) => {
   const { category } = route.params;
 
-  const goBack = () => {
-    navigation.goBack();
-  };
+  const theme = useTheme();
 
   const onPress = (trainer: Trainer) => {
     navigation.navigate('TrainerDetails', { trainer });
   };
 
+  const navigateBack = () => {
+    navigation.goBack();
+  };
+
+  const BackAction = () => <TopNavigationAction icon={BackIcon} onPress={navigateBack} />;
+
+  const renderItemAccessory = (trainer: Trainer) => () => {
+    return (
+      <Button
+        onPress={() => {
+          onPress(trainer);
+        }}
+        size="tiny">
+        SELECT
+      </Button>
+    );
+  };
+
+  const ItemImage = (props: Partial<ImageProps> | undefined) => {
+    const { style } = props || {};
+    return <Avatar {...props} style={[style, styles.itemImage]} source={require('../../../assets/icon.png')} />;
+  };
+
+  const renderItem = ({ item }: { item: Trainer }) => (
+    <ListItem
+      title={item.name}
+      description={item.description}
+      accessoryLeft={ItemImage}
+      accessoryRight={renderItemAccessory(item)}
+    />
+  );
+
   return (
     <SafeAreaView style={styles.container}>
-      <Pressable onPress={goBack} hitSlop={8}>
-        <Text style={styles.name}>Go back</Text>
-      </Pressable>
-      <Text style={styles.name}>Category {category} Trainers</Text>
-
-      <FlatList
-        style={styles.scrollContainer}
+      <TopNavigation title="Select trainer" alignment="center" accessoryLeft={BackAction} />
+      <Divider />
+      <List
+        style={{ backgroundColor: theme['color-basic-100'] }}
+        ItemSeparatorComponent={Divider}
         data={trainersList.filter(trainer => trainer.category === category)}
-        renderItem={({ item: trainer }) => (
-          <View style={styles.trainerItem} key={trainer.id}>
-            <Text>{trainer.name}</Text>
-            <Text>{trainer.description}</Text>
-            <Pressable onPress={() => onPress(trainer)}>
-              <Text>Select trainer</Text>
-            </Pressable>
-          </View>
-        )}
+        renderItem={renderItem}
       />
     </SafeAreaView>
   );

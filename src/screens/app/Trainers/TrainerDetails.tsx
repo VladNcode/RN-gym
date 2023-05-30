@@ -1,65 +1,82 @@
-import { Pressable, SafeAreaView, StyleSheet, Text } from 'react-native';
+import { ImageProps, SafeAreaView, StyleSheet, View, ViewProps } from 'react-native';
+
+import { Button, Card, Icon, Layout, Text, TopNavigation, TopNavigationAction } from '@ui-kitten/components';
 
 import { TrainerDetailsNavigationProp, TrainerDetailsRoute } from '../../../constants';
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#fff',
+    flex: 1,
   },
-  imageContainer: {
-    marginBottom: 20,
+  layoutContainer: {
+    flex: 1,
+    padding: 24,
   },
-  image: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+  text: {
+    marginTop: 20,
   },
-  name: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  specialties: {
-    fontStyle: 'italic',
-    marginBottom: 20,
-  },
-  rating: {
+  footerContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
+    justifyContent: 'flex-end',
+    marginTop: 20,
   },
-  ratingText: {
-    marginLeft: 5,
-    fontSize: 18,
-  },
-  description: {
-    textAlign: 'center',
-    fontSize: 18,
-    lineHeight: 30,
+  footerControl: {
+    marginHorizontal: 2,
   },
 });
+
+const Header = (props: ViewProps | undefined) => (
+  <View {...props}>
+    <Text category="h6">Maldives</Text>
+    <Text category="s1">By Wikipedia</Text>
+  </View>
+);
+
+const Footer = (props: ViewProps | undefined) => {
+  const { style } = props || {};
+
+  return (
+    <View {...props} style={[style, styles.footerContainer]}>
+      <Button style={styles.footerControl} size="small" status="basic">
+        CANCEL
+      </Button>
+      <Button style={styles.footerControl} size="small">
+        ACCEPT
+      </Button>
+    </View>
+  );
+};
 
 interface TrainerDetailsNavigationProps {
   route: TrainerDetailsRoute;
   navigation: TrainerDetailsNavigationProp;
 }
 
+const BackIcon = (props: Partial<ImageProps> | undefined) => <Icon {...props} name="arrow-back" />;
+
 const TrainerDetail = ({ navigation, route }: TrainerDetailsNavigationProps) => {
   const { trainer } = route.params;
 
-  const goBack = () => {
+  const navigateBack = () => {
     navigation.goBack();
   };
 
+  const BackAction = () => <TopNavigationAction icon={BackIcon} onPress={navigateBack} />;
+
   return (
     <SafeAreaView style={styles.container}>
-      <Pressable onPress={goBack}>
-        <Text>Go back</Text>
-      </Pressable>
-      <Text style={styles.name}>{trainer.name}</Text>
-      <Text style={styles.description}>{trainer.description}</Text>
+      <TopNavigation title={trainer.name} alignment="center" accessoryLeft={BackAction} />
+      <Layout style={styles.layoutContainer} level="1">
+        <Header />
+
+        <Text style={styles.text}>
+          The Maldives, officially the Republic of Maldives, is a small country in South Asia, located in the Arabian
+          Sea of the Indian Ocean. It lies southwest of Sri Lanka and India, about 1,000 kilometres (620 mi) from the
+          Asian continent
+        </Text>
+
+        <Footer />
+      </Layout>
     </SafeAreaView>
   );
 };

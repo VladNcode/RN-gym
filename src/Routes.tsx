@@ -71,14 +71,10 @@ export const Routes = React.memo(() => {
 
   if (userData && userData.displayName) {
     const Trainers = () => (
-      <StackTrainers.Navigator screenOptions={{ headerBackTitle: 'Back', title: 'Trainers' }}>
-        <StackTrainers.Screen
-          name="CategoriesSelect"
-          component={CategoriesSelect}
-          options={{ title: 'Trainers categories' }}
-        />
-        <StackTrainers.Screen name="TrainersSelect" component={TrainersSelect} options={{ title: 'Trainers' }} />
-        <StackTrainers.Screen name="TrainerDetails" component={TrainerDetails} options={{ title: 'Trainer' }} />
+      <StackTrainers.Navigator screenOptions={{ headerShown: false }}>
+        <StackTrainers.Screen name="CategoriesSelect" component={CategoriesSelect} />
+        <StackTrainers.Screen name="TrainersSelect" component={TrainersSelect} />
+        <StackTrainers.Screen name="TrainerDetails" component={TrainerDetails} />
       </StackTrainers.Navigator>
     );
 

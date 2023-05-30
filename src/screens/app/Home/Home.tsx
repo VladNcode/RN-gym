@@ -1,23 +1,42 @@
-// import { Button, Text, TextField, View } from 'react-native-ui-lib';
+import React from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 
-import { Activity } from '@tamagui/lucide-icons';
-import { Button } from 'tamagui';
+import { Button, Divider, Icon, IconElement, List, ListItem, TopNavigation } from '@ui-kitten/components';
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // maxHeight: 192,
   },
 });
 
-const Home = () => {
+interface IListItem {
+  title: string;
+  description: string;
+}
+
+const data = new Array(8).fill({
+  title: 'Title for Item',
+  description: 'Description for Item',
+});
+
+const Home = (): React.ReactElement => {
+  const renderItemAccessory = (): React.ReactElement => <Button size="tiny">FOLLOW</Button>;
+  const renderItemIcon = (props: any): IconElement => <Icon {...props} name="person" />;
+
+  const renderItem = ({ item, index }: { item: IListItem; index: number }): React.ReactElement => (
+    <ListItem
+      title={`${item.title} ${index + 1}`}
+      description={`${item.description} ${index + 1}`}
+      accessoryLeft={renderItemIcon}
+      accessoryRight={renderItemAccessory}
+    />
+  );
+
   return (
-    <SafeAreaView style={style.container}>
-      <Button width="50%" theme="green" iconAfter={Activity} size="$4">
-        iconAfter
-      </Button>
+    <SafeAreaView style={{ flex: 1 }}>
+      <TopNavigation title="MyApp" alignment="center" />
+      <Divider />
+      <List style={styles.container} ItemSeparatorComponent={Divider} data={data} renderItem={renderItem} />
     </SafeAreaView>
   );
 };
