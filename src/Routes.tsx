@@ -1,11 +1,13 @@
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { ImageProps, StyleSheet, Text, View } from 'react-native';
 import 'react-native-gesture-handler';
 import { useRecoilState } from 'recoil';
+
+import { BottomNavigation, BottomNavigationTab, Icon, IconElement } from '@ui-kitten/components';
 
 import { CustomDrawerContent } from './components';
 import {
@@ -22,11 +24,6 @@ import TrainerDetails from './screens/app/Trainers/TrainerDetails';
 import TrainersSelect from './screens/app/Trainers/TrainersSelect';
 import { userState } from './store/user';
 
-const Stack = createStackNavigator<RootStackParamsList>();
-const StackTrainers = createStackNavigator<TrainersStackParamsList>();
-const Drawer = createDrawerNavigator<RootDrawerParamsList>();
-const Tab = createBottomTabNavigator<RootTabParamsList>();
-
 const styles = StyleSheet.create({
   tabIcons: {
     width: 20,
@@ -36,6 +33,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
   },
   tempStyle: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  bottomTab: {
+    marginVertical: 8,
+  },
 });
 
 const AddTask = () => {
@@ -43,6 +43,24 @@ const AddTask = () => {
     <View style={styles.tempStyle}>
       <Text>AddTask Screen</Text>
     </View>
+  );
+};
+
+const Stack = createStackNavigator<RootStackParamsList>();
+const StackTrainers = createStackNavigator<TrainersStackParamsList>();
+const Drawer = createDrawerNavigator<RootDrawerParamsList>();
+
+const { Navigator, Screen } = createBottomTabNavigator<RootTabParamsList>();
+
+const PersonIcon = (props: Partial<ImageProps> | undefined): IconElement => <Icon {...props} name="person-outline" />;
+const BellIcon = (props: Partial<ImageProps> | undefined): IconElement => <Icon {...props} name="bell-outline" />;
+
+const BottomTabBar = ({ navigation, state }: BottomTabBarProps) => {
+  return (
+    <BottomNavigation selectedIndex={state.index} onSelect={index => navigation.navigate(state.routeNames[index])}>
+      <BottomNavigationTab style={styles.bottomTab} title="Home" icon={BellIcon} />
+      <BottomNavigationTab style={styles.bottomTab} title="Trainers" icon={PersonIcon} />
+    </BottomNavigation>
   );
 };
 
@@ -79,32 +97,10 @@ export const Routes = React.memo(() => {
     );
 
     const Tabs = () => (
-      <Tab.Navigator screenOptions={{ tabBarShowLabel: false, headerShown: false }}>
-        <Tab.Screen
-          name="Home"
-          component={Home}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                style={styles.tabIcons}
-                source={focused ? require('./assets/homeActive.png') : require('./assets/home.png')}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="TrainersScreen"
-          component={Trainers}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Image
-                style={styles.tabIcons}
-                source={focused ? require('./assets/calendarActive.png') : require('./assets/calendar.png')}
-              />
-            ),
-          }}
-        />
-      </Tab.Navigator>
+      <Navigator tabBar={props => <BottomTabBar {...props} />} screenOptions={{ headerShown: false }}>
+        <Screen name="Home" component={Home} />
+        <Screen name="TrainersScreen" component={Trainers} />
+      </Navigator>
     );
 
     return (

@@ -1,12 +1,24 @@
 import { SafeAreaView, StyleSheet } from 'react-native';
 
-import { Button, Divider, Icon, IconElement, List, ListItem, TopNavigation, useTheme } from '@ui-kitten/components';
+import {
+  Button,
+  Divider,
+  Icon,
+  IconElement,
+  List,
+  ListItem,
+  StyleService,
+  TopNavigation,
+  useStyleSheet,
+  useTheme,
+} from '@ui-kitten/components';
 
 import { CategoriesSelectNavigationProp } from '../../../constants';
 
-const styles = StyleSheet.create({
+const themedStyles = StyleService.create({
   container: {
     flex: 1,
+    backgroundColor: 'color-basic-800',
   },
 });
 
@@ -21,11 +33,11 @@ const data = new Array(5).fill({
 });
 
 const CategoriesSelect = ({ navigation }: { navigation: CategoriesSelectNavigationProp }) => {
+  const styles = useStyleSheet(themedStyles);
+
   const onPress = (category: number) => {
     navigation.navigate('TrainersSelect', { category });
   };
-
-  const theme = useTheme();
 
   const renderItemAccessory = (index: number) => (): React.ReactElement =>
     (
@@ -52,12 +64,7 @@ const CategoriesSelect = ({ navigation }: { navigation: CategoriesSelectNavigati
     <SafeAreaView style={styles.container}>
       <TopNavigation title="Select trainer category" alignment="center" />
       <Divider />
-      <List
-        style={{ backgroundColor: theme['color-basic-100'] }}
-        ItemSeparatorComponent={Divider}
-        data={data}
-        renderItem={renderItem}
-      />
+      <List ItemSeparatorComponent={Divider} data={data} renderItem={renderItem} />
     </SafeAreaView>
   );
 };

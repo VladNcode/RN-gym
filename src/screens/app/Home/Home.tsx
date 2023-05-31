@@ -1,11 +1,22 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native';
 
-import { Button, Divider, Icon, IconElement, List, ListItem, TopNavigation } from '@ui-kitten/components';
+import {
+  Button,
+  Divider,
+  Icon,
+  IconElement,
+  List,
+  ListItem,
+  StyleService,
+  TopNavigation,
+  useStyleSheet,
+} from '@ui-kitten/components';
 
-const styles = StyleSheet.create({
+const themedStyles = StyleService.create({
   container: {
-    // maxHeight: 192,
+    flex: 1,
+    backgroundColor: 'color-basic-800',
   },
 });
 
@@ -20,6 +31,8 @@ const data = new Array(8).fill({
 });
 
 const Home = (): React.ReactElement => {
+  const styles = useStyleSheet(themedStyles);
+
   const renderItemAccessory = (): React.ReactElement => <Button size="tiny">FOLLOW</Button>;
   const renderItemIcon = (props: any): IconElement => <Icon {...props} name="person" />;
 
@@ -33,10 +46,10 @@ const Home = (): React.ReactElement => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.container}>
       <TopNavigation title="MyApp" alignment="center" />
       <Divider />
-      <List style={styles.container} ItemSeparatorComponent={Divider} data={data} renderItem={renderItem} />
+      <List ItemSeparatorComponent={Divider} data={data} renderItem={renderItem} />
     </SafeAreaView>
   );
 };

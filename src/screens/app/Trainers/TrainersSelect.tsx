@@ -1,4 +1,4 @@
-import { ImageProps, SafeAreaView, StyleSheet } from 'react-native';
+import { ImageProps, SafeAreaView } from 'react-native';
 
 import {
   Avatar,
@@ -7,17 +7,19 @@ import {
   Icon,
   List,
   ListItem,
+  StyleService,
   TopNavigation,
   TopNavigationAction,
-  useTheme,
+  useStyleSheet,
 } from '@ui-kitten/components';
 
 import { TrainersSelectNavigationProp, TrainersSelectRoute } from '../../../constants';
 import { Trainer } from './types';
 
-const styles = StyleSheet.create({
+const themedStyles = StyleService.create({
   container: {
     flex: 1,
+    backgroundColor: 'color-basic-800',
   },
   itemImage: {
     tintColor: undefined,
@@ -95,9 +97,9 @@ interface TrainersSelectNavigationProps {
 const BackIcon = (props: Partial<ImageProps> | undefined) => <Icon {...props} name="arrow-back" />;
 
 const TrainersSelect = ({ navigation, route }: TrainersSelectNavigationProps) => {
-  const { category } = route.params;
+  const styles = useStyleSheet(themedStyles);
 
-  const theme = useTheme();
+  const { category } = route.params;
 
   const onPress = (trainer: Trainer) => {
     navigation.navigate('TrainerDetails', { trainer });
@@ -123,7 +125,13 @@ const TrainersSelect = ({ navigation, route }: TrainersSelectNavigationProps) =>
 
   const ItemImage = (props: Partial<ImageProps> | undefined) => {
     const { style } = props || {};
-    return <Avatar {...props} style={[style, styles.itemImage]} source={require('../../../assets/icon.png')} />;
+    return (
+      <Avatar
+        {...props}
+        style={[style, styles.itemImage as { tintColor: undefined }]}
+        source={require('../../../assets/icon.png')}
+      />
+    );
   };
 
   const renderItem = ({ item }: { item: Trainer }) => (
@@ -140,7 +148,6 @@ const TrainersSelect = ({ navigation, route }: TrainersSelectNavigationProps) =>
       <TopNavigation title="Select trainer" alignment="center" accessoryLeft={BackAction} />
       <Divider />
       <List
-        style={{ backgroundColor: theme['color-basic-100'] }}
         ItemSeparatorComponent={Divider}
         data={trainersList.filter(trainer => trainer.category === category)}
         renderItem={renderItem}
