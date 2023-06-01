@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native';
 
 import {
   Button,
@@ -10,7 +10,6 @@ import {
   StyleService,
   TopNavigation,
   useStyleSheet,
-  useTheme,
 } from '@ui-kitten/components';
 
 import { CategoriesSelectNavigationProp } from '../../../constants';
@@ -56,7 +55,7 @@ const CategoriesSelect = ({ navigation }: { navigation: CategoriesSelectNavigati
       title={`Category ${index + 1}`}
       description={`${item.description} ${index + 1}`}
       accessoryLeft={renderItemIcon}
-      accessoryRight={renderItemAccessory(index + 1)}
+      accessoryRight={renderItemAccessory(index)}
     />
   );
 

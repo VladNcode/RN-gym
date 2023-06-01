@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { SafeAreaView } from 'react-native';
 
@@ -10,6 +11,7 @@ import {
   ListItem,
   StyleService,
   TopNavigation,
+  TopNavigationAction,
   useStyleSheet,
 } from '@ui-kitten/components';
 
@@ -25,6 +27,12 @@ interface IListItem {
   description: string;
 }
 
+const MenuIcon = (props: any): IconElement => <Icon {...props} name="menu-outline" />;
+
+const OpenMenuAction = (openMenu: () => void): React.ReactElement => (
+  <TopNavigationAction onPress={openMenu} icon={MenuIcon} />
+);
+
 const data = new Array(8).fill({
   title: 'Title for Item',
   description: 'Description for Item',
@@ -32,8 +40,13 @@ const data = new Array(8).fill({
 
 const Home = (): React.ReactElement => {
   const styles = useStyleSheet(themedStyles);
+  const navigation = useNavigation<any>();
 
-  const renderItemAccessory = (): React.ReactElement => <Button size="tiny">FOLLOW</Button>;
+  const renderItemAccessory = (): React.ReactElement => (
+    <Button onPress={() => navigation.openDrawer()} size="tiny">
+      FOLLOW
+    </Button>
+  );
   const renderItemIcon = (props: any): IconElement => <Icon {...props} name="person" />;
 
   const renderItem = ({ item, index }: { item: IListItem; index: number }): React.ReactElement => (
@@ -47,7 +60,13 @@ const Home = (): React.ReactElement => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TopNavigation title="MyApp" alignment="center" />
+      <TopNavigation
+        accessoryLeft={() => {
+          return OpenMenuAction(navigation.openDrawer);
+        }}
+        title="Home"
+        alignment="center"
+      />
       <Divider />
       <List ItemSeparatorComponent={Divider} data={data} renderItem={renderItem} />
     </SafeAreaView>
