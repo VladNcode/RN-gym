@@ -15,11 +15,11 @@ export const Onboarding = React.memo(({ navigation }: { navigation: OnboardingNa
   };
 
   return (
-    <ImageBackground source={require('../../../assets/onboarding.png')} style={styles.image}>
+    <ImageBackground source={require('../../../assets/onboarding2.jpg')} style={styles.image}>
       <Layout style={styles.container}>
-        <Text category="h4">Best task management app</Text>
+        <Text category="h3">Evolution fitness club</Text>
         <Text category="s1" style={styles.subtitle}>
-          Get organized by sorting out all your tasks and boost your productivity.
+          Unleash Your Evolutionary Potential!
         </Text>
 
         <View style={styles.buttonsContainer}>

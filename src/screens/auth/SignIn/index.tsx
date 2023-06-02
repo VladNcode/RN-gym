@@ -1,9 +1,12 @@
 import auth from '@react-native-firebase/auth';
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, SafeAreaView, View } from 'react-native';
+import { Alert, TouchableWithoutFeedback, View } from 'react-native';
 
-import { CustomButton, FooterLink, Input, Title } from '../../../components';
+import { Button, Icon, Input, Layout, Text } from '@ui-kitten/components';
+
+import { FooterLink } from '../../../components';
+import ErrorCaption from '../../../components/ErrorCaption';
 import { SignInNavigationProp, isFirebaseSignInError } from '../../../constants';
 import { styles } from './styles';
 
@@ -52,54 +55,78 @@ export const SignIn = React.memo(({ navigation }: { navigation: SignInNavigation
     navigation.navigate('SignUp');
   };
 
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+
+  const toggleSecureEntry = (): void => {
+    setSecureTextEntry(s => !s);
+  };
+
+  const renderIcon = (props: any): React.ReactElement => (
+    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
+      <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} />
+    </TouchableWithoutFeedback>
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Title text="Welcome back!" />
+    <Layout style={styles.container}>
+      <Text category="h3">Welcome back!</Text>
 
       <View style={styles.inputsContainer}>
         <Controller
+          name="email"
           control={control}
           rules={{ required: true, pattern: /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,10}\b$/i }}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
-              keyboardType="email-address"
-              style={styles.input}
-              placeholder="Email"
-              onBlur={onBlur}
-              onChangeText={onChange}
               value={value}
-              errorText={
-                errors.email &&
-                isSubmitted &&
-                (errors.email?.type === 'pattern' ? 'Invalid email' : 'This field is required')
+              label="Email"
+              keyboardType="email-address"
+              placeholder="Email"
+              onChangeText={onChange}
+              onBlur={onBlur}
+              status={errors.email && isSubmitted ? 'danger' : 'basic'}
+              caption={
+                errors.email && isSubmitted
+                  ? ErrorCaption(errors.email?.type === 'pattern' ? 'Invalid email' : 'This field is required')
+                  : undefined
               }
             />
           )}
-          name="email"
         />
         <Controller
+          name="password"
           control={control}
-          rules={{ required: true }}
+          rules={{ required: true, minLength: 8 }}
           render={({ field: { onChange, onBlur, value } }) => (
             <Input
-              secureTextEntry
               style={styles.input}
-              placeholder="Password"
-              onBlur={onBlur}
-              onChangeText={onChange}
               value={value}
-              errorText={errors.password && isSubmitted && 'This field is required'}
+              label="Password"
+              placeholder="Password"
+              caption={
+                errors.password && isSubmitted
+                  ? ErrorCaption(
+                      errors.password?.type === 'minLength'
+                        ? 'Should contain at least 8 symbols'
+                        : 'This field is required',
+                    )
+                  : undefined
+              }
+              accessoryRight={renderIcon}
+              secureTextEntry={secureTextEntry}
+              status={errors.password && isSubmitted ? 'danger' : 'basic'}
+              onChangeText={onChange}
+              onBlur={onBlur}
             />
           )}
-          name="password"
         />
       </View>
 
-      <CustomButton style={styles.button} onPress={handleSubmit(onSubmit)}>
+      <Button style={styles.button} onPress={handleSubmit(onSubmit)}>
         Log in
-      </CustomButton>
+      </Button>
 
       <FooterLink text="Not registered?" linkText="Sign up!" onPress={navigateToSignup} />
-    </SafeAreaView>
+    </Layout>
   );
 });

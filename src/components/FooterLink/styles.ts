@@ -14,9 +14,6 @@ export const styles = StyleSheet.create({
     fontSize: 15,
   },
   footerLink: {
-    color: COLOR_SCHEME.purple,
     marginLeft: 5,
-    fontSize: 15,
-    fontWeight: '700',
   },
 });

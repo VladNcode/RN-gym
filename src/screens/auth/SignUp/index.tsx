@@ -1,9 +1,12 @@
 import auth from '@react-native-firebase/auth';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Linking, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Linking, ScrollView, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 
-import { Checkbox, CustomButton, FooterLink, Input, Title } from '../../../components';
+import { Button, CheckBox, Icon, Input, Layout, Text } from '@ui-kitten/components';
+
+import { FooterLink } from '../../../components';
+import ErrorCaption from '../../../components/ErrorCaption';
 import {
   PRIVACY_POLICY_LINK,
   SignUpNavigationProp,
@@ -74,128 +77,185 @@ export const SignUp = React.memo(({ navigation }: { navigation: SignUpNavigation
     }
   };
 
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [secureTextEntry2, setSecureTextEntry2] = useState(true);
+
+  const toggleSecureEntry = (): void => {
+    setSecureTextEntry(s => !s);
+  };
+
+  const toggleSecureEntry2 = (): void => {
+    setSecureTextEntry2(s => !s);
+  };
+
+  const renderIcon = (props: any): React.ReactElement => (
+    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
+      <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} />
+    </TouchableWithoutFeedback>
+  );
+
+  const renderIcon2 = (props: any): React.ReactElement => (
+    <TouchableWithoutFeedback onPress={toggleSecureEntry2}>
+      <Icon {...props} name={secureTextEntry2 ? 'eye-off' : 'eye'} />
+    </TouchableWithoutFeedback>
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
+    <Layout style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Title text="Join the club!" />
+        <Text category="h3">Join the club!</Text>
 
-        <Controller
-          control={control}
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              style={styles.input}
-              placeholder="First name"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              errorText={errors.firstName && isSubmitted && 'This field is required'}
-            />
-          )}
-          name="firstName"
-        />
+        <View style={styles.inputsContainer}>
+          <Controller
+            name="firstName"
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                value={value}
+                label="First name"
+                placeholder="First name"
+                onChangeText={onChange}
+                onBlur={onBlur}
+                status={errors.firstName && isSubmitted ? 'danger' : 'basic'}
+                caption={errors.firstName && isSubmitted ? ErrorCaption('This field is required') : undefined}
+              />
+            )}
+          />
 
-        <Controller
-          control={control}
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              style={styles.input}
-              placeholder="Last name"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              errorText={errors.lastName && isSubmitted && 'This field is required'}
-            />
-          )}
-          name="lastName"
-        />
-        <Controller
-          control={control}
-          rules={{ required: true, pattern: /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,10}\b$/i }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              keyboardType="email-address"
-              style={styles.input}
-              placeholder="Email"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              errorText={
-                errors.email &&
-                isSubmitted &&
-                (errors.email?.type === 'pattern' ? 'Invalid email' : 'This field is required')
-              }
-            />
-          )}
-          name="email"
-        />
-        <Controller
-          control={control}
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              secureTextEntry
-              style={styles.input}
-              placeholder="Password"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              errorText={errors.password && isSubmitted && 'This field is required'}
-            />
-          )}
-          name="password"
-        />
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-            validate: (val: string) => {
-              if (watch('password') !== val) {
-                return 'Your passwords do no match';
-              }
-            },
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              secureTextEntry
-              style={styles.input}
-              placeholder="Confirm password"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              errorText={
-                errors.confirmPassword && isSubmitted && (errors.confirmPassword?.message || 'This field is required')
-              }
-            />
-          )}
-          name="confirmPassword"
-        />
+          <Controller
+            name="lastName"
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                style={styles.input}
+                value={value}
+                label="Last name"
+                placeholder="Last name"
+                onChangeText={onChange}
+                onBlur={onBlur}
+                status={errors.lastName && isSubmitted ? 'danger' : 'basic'}
+                caption={errors.lastName && isSubmitted ? ErrorCaption('This field is required') : undefined}
+              />
+            )}
+          />
+          <Controller
+            name="email"
+            control={control}
+            rules={{ required: true, pattern: /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,10}\b$/i }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                style={styles.input}
+                value={value}
+                label="Email"
+                keyboardType="email-address"
+                placeholder="Email"
+                onChangeText={onChange}
+                onBlur={onBlur}
+                status={errors.email && isSubmitted ? 'danger' : 'basic'}
+                caption={
+                  errors.email && isSubmitted
+                    ? ErrorCaption(errors.email?.type === 'pattern' ? 'Invalid email' : 'This field is required')
+                    : undefined
+                }
+              />
+            )}
+          />
+          <Controller
+            name="password"
+            control={control}
+            rules={{ required: true, minLength: 8 }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                style={styles.input}
+                value={value}
+                label="Password"
+                placeholder="Password"
+                caption={
+                  errors.password && isSubmitted
+                    ? ErrorCaption(
+                        errors.password?.type === 'minLength'
+                          ? 'Should contain at least 8 symbols'
+                          : 'This field is required',
+                      )
+                    : undefined
+                }
+                accessoryRight={renderIcon}
+                secureTextEntry={secureTextEntry}
+                status={errors.password && isSubmitted ? 'danger' : 'basic'}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
+          />
+          <Controller
+            name="confirmPassword"
+            control={control}
+            rules={{
+              required: true,
+              minLength: 8,
+              validate: (val: string) => {
+                if (watch('password') !== val) {
+                  return 'Your passwords do no match';
+                }
+              },
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                style={styles.input}
+                value={value}
+                label="Confirm password"
+                placeholder="Confirm password"
+                caption={
+                  errors.confirmPassword && isSubmitted
+                    ? ErrorCaption(
+                        errors.confirmPassword?.type === 'minLength'
+                          ? 'Should contain at least 8 symbols'
+                          : errors.confirmPassword?.message || 'This field is required',
+                      )
+                    : undefined
+                }
+                accessoryRight={renderIcon2}
+                secureTextEntry={secureTextEntry2}
+                status={errors.confirmPassword && isSubmitted ? 'danger' : 'basic'}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
+          />
 
-        <View style={styles.checkboxContainer}>
-          <Checkbox checked={agreed} setChecked={setAgreed} />
-
-          <View style={styles.checkboxTextContainer}>
-            <Text style={styles.checkboxText}>I agree to the </Text>
-            <TouchableOpacity onPress={() => onLinkPress(TERMS_AND_CONDITIONS_LINK)}>
-              <Text style={styles.link}>Terms of Service </Text>
-            </TouchableOpacity>
-            <Text style={styles.checkboxText}>and </Text>
-            <TouchableOpacity onPress={() => onLinkPress(PRIVACY_POLICY_LINK)}>
-              <Text style={styles.link}>Privacy Policy</Text>
-            </TouchableOpacity>
+          <View style={styles.checkboxContainer}>
+            <CheckBox checked={agreed} onChange={setAgreed} />
+            <View style={styles.checkboxTextContainer}>
+              <Text category="c1">I agree to the </Text>
+              <TouchableOpacity onPress={() => onLinkPress(TERMS_AND_CONDITIONS_LINK)}>
+                <Text status="info" category="label" style={styles.link}>
+                  Terms of Service{' '}
+                </Text>
+              </TouchableOpacity>
+              <Text category="c1">and </Text>
+              <TouchableOpacity onPress={() => onLinkPress(PRIVACY_POLICY_LINK)}>
+                <Text status="info" category="label" style={styles.link}>
+                  Privacy Policy
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        {isSubmitted && !agreed && (
-          <Text style={styles.checkboxError}>Must agree to the Terms of Service and Privacy Policy</Text>
-        )}
 
-        <CustomButton style={styles.button} onPress={handleSubmit(onSubmit)}>
+          {isSubmitted && !agreed && (
+            <Text status="danger" category="label" style={styles.checkboxError}>
+              Must agree to the Terms of Service and Privacy Policy
+            </Text>
+          )}
+        </View>
+
+        <Button style={styles.button} onPress={handleSubmit(onSubmit)}>
           Submit
-        </CustomButton>
+        </Button>
 
         <FooterLink text="Already registered?" linkText="Sign in!" onPress={navigateToSignIn} />
       </ScrollView>
-    </SafeAreaView>
+    </Layout>
   );
 });
