@@ -1,7 +1,8 @@
-import { ImageProps, SafeAreaView, StyleSheet, View, ViewProps } from 'react-native';
+import { Image, ImageProps, SafeAreaView, StyleSheet, View } from 'react-native';
 
 import {
   Button,
+  Divider,
   Icon,
   Layout,
   StyleService,
@@ -32,6 +33,16 @@ const styles = StyleSheet.create({
   footerControl: {
     marginHorizontal: 2,
   },
+  name: {
+    marginTop: 5,
+  },
+  alignCenter: {
+    alignItems: 'center',
+  },
+  image: { width: 200, height: 200, borderRadius: 100 },
+  divider: {
+    marginVertical: 16,
+  },
 });
 
 const themedStyles = StyleService.create({
@@ -51,7 +62,7 @@ const BackIcon = (props: Partial<ImageProps> | undefined) => <Icon {...props} na
 const TrainerDetail = ({ navigation, route }: TrainerDetailsNavigationProps) => {
   const themeStyles = useStyleSheet(themedStyles);
 
-  const { trainer } = route.params;
+  const { trainer, category } = route.params;
 
   const navigateBack = () => {
     navigation.goBack();
@@ -63,16 +74,32 @@ const TrainerDetail = ({ navigation, route }: TrainerDetailsNavigationProps) => 
     <SafeAreaView style={themeStyles.container}>
       <TopNavigation title="Trainer info" alignment="center" accessoryLeft={BackAction} />
       <Layout style={styles.layoutContainer} level="1">
-        <View>
-          <Text category="h4">{trainer.name}</Text>
-          <Text category="s1">Category {trainer.category} trainer</Text>
+        <View style={styles.alignCenter}>
+          <Image source={require('../../../assets/icon.png')} style={styles.image} />
+          <Text style={styles.name} category="h6">
+            Level {category} trainer
+          </Text>
+          <Text style={styles.name} category="h4">
+            {trainer.name}
+          </Text>
         </View>
 
-        <Text category="p1" style={styles.text}>
-          The Maldives, officially the Republic of Maldives, is a small country in South Asia, located in the Arabian
-          Sea of the Indian Ocean. It lies southwest of Sri Lanka and India, about 1,000 kilometres (620 mi) from the
-          Asian continent
+        <Divider style={styles.divider} />
+
+        <Text style={styles.name} category="label">
+          Certifications: {trainer.certifications}
         </Text>
+        <Text style={styles.name} category="label">
+          Areas of expertise: {trainer.areasOfExpertise}
+        </Text>
+
+        <Text category="p1" style={styles.text}>
+          {trainer.longDescription}
+        </Text>
+
+        <Divider style={styles.divider} />
+
+        <Text category="s1">Available: {trainer.availability}</Text>
 
         <View style={styles.footerContainer}>
           <Button style={styles.footerControl} size="small" status="basic">

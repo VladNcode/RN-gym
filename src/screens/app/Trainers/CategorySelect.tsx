@@ -22,14 +22,36 @@ const themedStyles = StyleService.create({
 });
 
 interface IListItem {
-  title: string;
+  level: number;
   description: string;
 }
 
-const data = new Array(5).fill({
-  title: 'Title for Item',
-  description: 'Description for Item',
-});
+const categories = [
+  {
+    level: 1,
+    description: 'Novice Trainer - A beginner with limited experience, providing basic fitness advice.',
+  },
+  {
+    level: 2,
+    description:
+      'Competent Trainer - Possesses a solid foundation of training principles, designs basic workouts, and offers general nutrition advice.',
+  },
+  {
+    level: 3,
+    description:
+      'Skilled Trainer - Proficient in various fitness disciplines, creates personalized programs, and specializes in specific areas.',
+  },
+  {
+    level: 4,
+    description:
+      'Advanced Trainer - Highly skilled and knowledgeable, designs comprehensive programs, and stays up-to-date with the latest research.',
+  },
+  {
+    level: 5,
+    description:
+      'The pinnacle of excellence, widely recognized for exceptional skills, often works with professionals, and contributes to industry advancement.',
+  },
+];
 
 const CategoriesSelect = ({ navigation }: { navigation: CategoriesSelectNavigationProp }) => {
   const styles = useStyleSheet(themedStyles);
@@ -52,8 +74,8 @@ const CategoriesSelect = ({ navigation }: { navigation: CategoriesSelectNavigati
 
   const renderItem = ({ item, index }: { item: IListItem; index: number }): React.ReactElement => (
     <ListItem
-      title={`Category ${index + 1}`}
-      description={`${item.description} ${index + 1}`}
+      title={`Level ${item.level}`}
+      description={item.description}
       accessoryLeft={renderItemIcon}
       accessoryRight={renderItemAccessory(index)}
     />
@@ -63,7 +85,7 @@ const CategoriesSelect = ({ navigation }: { navigation: CategoriesSelectNavigati
     <SafeAreaView style={styles.container}>
       <TopNavigation title="Select trainer category" alignment="center" />
       <Divider />
-      <List ItemSeparatorComponent={Divider} data={data} renderItem={renderItem} />
+      <List ItemSeparatorComponent={Divider} data={categories} renderItem={renderItem} />
     </SafeAreaView>
   );
 };

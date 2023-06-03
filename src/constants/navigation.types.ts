@@ -4,7 +4,7 @@ import { DrawerContentComponentProps } from '@react-navigation/drawer/lib/typesc
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import { Trainer } from '../screens/app/Trainers/types';
+import { TrainerProfile } from '../screens/app/Trainers/types';
 
 export type RootStackParamsList = {
   Onboarding: undefined;
@@ -15,7 +15,7 @@ export type RootStackParamsList = {
 export type TrainersStackParamsList = {
   CategoriesSelect: undefined;
   TrainersSelect: { category: number };
-  TrainerDetails: { trainer: Trainer };
+  TrainerDetails: { trainer: TrainerProfile; category: number };
 };
 
 export type CategoriesSelectNavigationProp = StackNavigationProp<TrainersStackParamsList, 'CategoriesSelect'>;

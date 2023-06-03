@@ -1,4 +1,6 @@
-import { ImageProps, SafeAreaView } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
+import { useEffect, useState } from 'react';
+import { ImageProps, SafeAreaView, View } from 'react-native';
 
 import {
   Avatar,
@@ -7,6 +9,7 @@ import {
   Icon,
   List,
   ListItem,
+  Spinner,
   StyleService,
   TopNavigation,
   TopNavigationAction,
@@ -14,7 +17,7 @@ import {
 } from '@ui-kitten/components';
 
 import { TrainersSelectNavigationProp, TrainersSelectRoute } from '../../../constants';
-import { Trainer } from './types';
+import { TrainerProfile } from './types';
 
 const themedStyles = StyleService.create({
   container: {
@@ -24,70 +27,8 @@ const themedStyles = StyleService.create({
   itemImage: {
     tintColor: undefined,
   },
+  spinner: { justifyContent: 'center', alignItems: 'center', marginTop: '70%' },
 });
-
-const trainersList: Trainer[] = [
-  {
-    id: 1,
-    name: 'Trainer 1',
-    description: 'Trainer 1 description',
-    category: 1,
-  },
-  {
-    id: 2,
-    name: 'Trainer 2',
-    description: 'Trainer 2 description',
-    category: 1,
-  },
-  {
-    id: 3,
-    name: 'Trainer 3',
-    description: 'Trainer 3 description',
-    category: 2,
-  },
-  {
-    id: 4,
-    name: 'Trainer 4',
-    description: 'Trainer 4 description',
-    category: 2,
-  },
-  {
-    id: 5,
-    name: 'Trainer 5',
-    description: 'Trainer 5 description',
-    category: 3,
-  },
-  {
-    id: 6,
-    name: 'Trainer 6',
-    description: 'Trainer 6 description',
-    category: 3,
-  },
-  {
-    id: 7,
-    name: 'Trainer 7',
-    description: 'Trainer 7 description',
-    category: 4,
-  },
-  {
-    id: 8,
-    name: 'Trainer 8',
-    description: 'Trainer 8 description',
-    category: 4,
-  },
-  {
-    id: 9,
-    name: 'Trainer 9',
-    description: 'Trainer 9 description',
-    category: 5,
-  },
-  {
-    id: 10,
-    name: 'Trainer 10',
-    description: 'Trainer 10 description',
-    category: 5,
-  },
-];
 
 interface TrainersSelectNavigationProps {
   route: TrainersSelectRoute;
@@ -101,8 +42,8 @@ const TrainersSelect = ({ navigation, route }: TrainersSelectNavigationProps) =>
 
   const { category } = route.params;
 
-  const onPress = (trainer: Trainer) => {
-    navigation.navigate('TrainerDetails', { trainer });
+  const onPress = (trainer: TrainerProfile) => {
+    navigation.navigate('TrainerDetails', { trainer, category });
   };
 
   const navigateBack = () => {
@@ -111,7 +52,27 @@ const TrainersSelect = ({ navigation, route }: TrainersSelectNavigationProps) =>
 
   const BackAction = () => <TopNavigationAction icon={BackIcon} onPress={navigateBack} />;
 
-  const renderItemAccessory = (trainer: Trainer) => () => {
+  const [trainers, setTrainers] = useState<TrainerProfile[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const trainersDocs = (await firestore().collection('trainers').where('level', '==', String(category)).get())
+          .docs;
+        setTrainers(trainersDocs.map(doc => doc.data() as TrainerProfile));
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [category]);
+
+  const renderItemAccessory = (trainer: TrainerProfile) => () => {
     return (
       <Button
         onPress={() => {
@@ -134,10 +95,10 @@ const TrainersSelect = ({ navigation, route }: TrainersSelectNavigationProps) =>
     );
   };
 
-  const renderItem = ({ item }: { item: Trainer }) => (
+  const renderItem = ({ item }: { item: TrainerProfile }) => (
     <ListItem
       title={item.name}
-      description={item.description}
+      description={item.shortDescription}
       accessoryLeft={ItemImage}
       accessoryRight={renderItemAccessory(item)}
     />
@@ -147,11 +108,13 @@ const TrainersSelect = ({ navigation, route }: TrainersSelectNavigationProps) =>
     <SafeAreaView style={styles.container}>
       <TopNavigation title="Select trainer" alignment="center" accessoryLeft={BackAction} />
       <Divider />
-      <List
-        ItemSeparatorComponent={Divider}
-        data={trainersList.filter(trainer => trainer.category === category)}
-        renderItem={renderItem}
-      />
+      {loading ? (
+        <View style={styles.spinner}>
+          <Spinner size="giant" />
+        </View>
+      ) : (
+        <List ItemSeparatorComponent={Divider} data={trainers} renderItem={renderItem} />
+      )}
     </SafeAreaView>
   );
 };

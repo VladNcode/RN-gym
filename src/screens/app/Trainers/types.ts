@@ -1,6 +1,8 @@
-export interface Trainer {
-  id: number;
+export interface TrainerProfile {
   name: string;
-  description: string;
-  category: number;
+  certifications: string;
+  areasOfExpertise: string;
+  availability: string;
+  shortDescription: string;
+  longDescription: string;
 }
