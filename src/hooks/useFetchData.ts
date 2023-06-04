@@ -22,7 +22,7 @@ const useFetchData = <T>(collectionName: string, where?: Where): [T[], boolean] 
       try {
         setLoading(true);
         const classesDocs = (await query.get()).docs;
-        setData(classesDocs.map(doc => doc.data() as T));
+        setData(classesDocs.map(doc => ({ ...(doc.data() as T), id: doc.id })));
       } catch (error) {
         console.error(error);
       } finally {
