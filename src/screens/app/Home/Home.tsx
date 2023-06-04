@@ -15,6 +15,8 @@ import {
   useStyleSheet,
 } from '@ui-kitten/components';
 
+import { gymClasses } from '../../../mock/gymClasses';
+
 const themedStyles = StyleService.create({
   container: {
     flex: 1,
@@ -22,9 +24,13 @@ const themedStyles = StyleService.create({
   },
 });
 
-interface IListItem {
-  title: string;
-  description: string;
+interface GymClass {
+  name: string;
+  dateAndTime: string;
+  location: string;
+  instructor: string;
+  shortDescription: string;
+  longDescription: string;
 }
 
 const MenuIcon = (props: any): IconElement => <Icon {...props} name="menu-outline" />;
@@ -33,26 +39,21 @@ const OpenMenuAction = (openMenu: () => void): React.ReactElement => (
   <TopNavigationAction onPress={openMenu} icon={MenuIcon} />
 );
 
-const data = new Array(8).fill({
-  title: 'Title for Item',
-  description: 'Description for Item',
-});
-
 const Home = (): React.ReactElement => {
   const styles = useStyleSheet(themedStyles);
   const navigation = useNavigation<any>();
 
   const renderItemAccessory = (): React.ReactElement => (
     <Button onPress={() => navigation.openDrawer()} size="tiny">
-      FOLLOW
+      SELECT
     </Button>
   );
-  const renderItemIcon = (props: any): IconElement => <Icon {...props} name="person" />;
+  const renderItemIcon = (props: any): IconElement => <Icon {...props} name="clock-outline" />;
 
-  const renderItem = ({ item, index }: { item: IListItem; index: number }): React.ReactElement => (
+  const renderItem = ({ item }: { item: GymClass }): React.ReactElement => (
     <ListItem
-      title={`${item.title} ${index + 1}`}
-      description={`${item.description} ${index + 1}`}
+      title={item.name}
+      description={item.shortDescription}
       accessoryLeft={renderItemIcon}
       accessoryRight={renderItemAccessory}
     />
@@ -68,7 +69,7 @@ const Home = (): React.ReactElement => {
         alignment="center"
       />
       <Divider />
-      <List ItemSeparatorComponent={Divider} data={data} renderItem={renderItem} />
+      <List ItemSeparatorComponent={Divider} data={gymClasses} renderItem={renderItem} />
     </SafeAreaView>
   );
 };

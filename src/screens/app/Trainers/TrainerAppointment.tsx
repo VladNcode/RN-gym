@@ -1,10 +1,15 @@
+import { useState } from 'react';
 import { Image, ImageProps, SafeAreaView, StyleSheet, View } from 'react-native';
 
 import {
   Button,
+  Datepicker,
   Divider,
   Icon,
+  IndexPath,
   Layout,
+  Select,
+  SelectItem,
   StyleService,
   Text,
   TopNavigation,
@@ -12,7 +17,7 @@ import {
   useStyleSheet,
 } from '@ui-kitten/components';
 
-import { TrainerDetailsNavigationProp, TrainerDetailsRoute } from '../../../constants';
+import { TrainerAppointmentNavigationProp, TrainerAppointmentRoute } from '../../../constants';
 
 const styles = StyleSheet.create({
   container: {
@@ -52,17 +57,17 @@ const themedStyles = StyleService.create({
   },
 });
 
-interface TrainerDetailsNavigationProps {
-  route: TrainerDetailsRoute;
-  navigation: TrainerDetailsNavigationProp;
+interface TrainerAppointmentNavigationProps {
+  route: TrainerAppointmentRoute;
+  navigation: TrainerAppointmentNavigationProp;
 }
 
 const BackIcon = (props: Partial<ImageProps> | undefined) => <Icon {...props} name="arrow-back" />;
 
-const TrainerDetail = ({ navigation, route }: TrainerDetailsNavigationProps) => {
+const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationProps) => {
   const themeStyles = useStyleSheet(themedStyles);
 
-  const { trainer, category } = route.params;
+  const { trainer } = route.params;
 
   const navigateBack = () => {
     navigation.goBack();
@@ -70,15 +75,16 @@ const TrainerDetail = ({ navigation, route }: TrainerDetailsNavigationProps) => 
 
   const BackAction = () => <TopNavigationAction icon={BackIcon} onPress={navigateBack} />;
 
+  const [date, setDate] = useState(new Date());
+  const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
+
   return (
     <SafeAreaView style={themeStyles.container}>
-      <TopNavigation title="Trainer info" alignment="center" accessoryLeft={BackAction} />
+      <TopNavigation title="Book a training session" alignment="center" accessoryLeft={BackAction} />
       <Layout style={styles.layoutContainer} level="1">
         <View style={styles.alignCenter}>
           <Image source={require('../../../assets/icon.png')} style={styles.image} />
-          <Text style={styles.name} category="h6">
-            Level {category} trainer
-          </Text>
+
           <Text style={styles.name} category="h4">
             {trainer.name}
           </Text>
@@ -86,32 +92,24 @@ const TrainerDetail = ({ navigation, route }: TrainerDetailsNavigationProps) => 
 
         <Divider style={styles.divider} />
 
-        <Text style={styles.name} category="label">
-          Certifications: {trainer.certifications}
-        </Text>
-        <Text style={styles.name} category="label">
-          Areas of expertise: {trainer.areasOfExpertise}
-        </Text>
+        <Text category="h6">{`Selected date: ${date.toLocaleDateString()}`}</Text>
 
-        <Text category="p1" style={styles.text}>
-          {trainer.longDescription}
-        </Text>
+        <Datepicker date={date} onSelect={setDate} />
+
+        <Select selectedIndex={selectedIndex} onSelect={index => setSelectedIndex(index)}>
+          <SelectItem title="Option 1" />
+          <SelectItem title="Option 2" />
+          <SelectItem title="Option 3" />
+        </Select>
 
         <Divider style={styles.divider} />
-
-        <Text category="s1">Available: {trainer.availability}</Text>
 
         <View style={styles.footerContainer}>
           <Button style={styles.footerControl} size="small" status="basic">
             CANCEL
           </Button>
-          <Button
-            onPress={() => {
-              navigation.navigate('TrainerAppointment', { trainer });
-            }}
-            style={styles.footerControl}
-            size="small">
-            BOOK TRAINING SESSION
+          <Button style={styles.footerControl} size="small">
+            ACCEPT
           </Button>
         </View>
       </Layout>
@@ -119,4 +117,4 @@ const TrainerDetail = ({ navigation, route }: TrainerDetailsNavigationProps) => 
   );
 };
 
-export default TrainerDetail;
+export default TrainerAppointment;

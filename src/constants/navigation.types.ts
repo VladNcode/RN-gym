@@ -4,6 +4,7 @@ import { DrawerContentComponentProps } from '@react-navigation/drawer/lib/typesc
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
+import { GymClass } from '../screens/app/Classes/types';
 import { TrainerProfile } from '../screens/app/Trainers/types';
 
 export type RootStackParamsList = {
@@ -16,6 +17,12 @@ export type TrainersStackParamsList = {
   CategoriesSelect: undefined;
   TrainersSelect: { category: number };
   TrainerDetails: { trainer: TrainerProfile; category: number };
+  TrainerAppointment: { trainer: TrainerProfile };
+};
+
+export type ClassesStackParamsList = {
+  ClassesSelect: undefined;
+  ClassDetails: { classInfo: GymClass };
 };
 
 export type CategoriesSelectNavigationProp = StackNavigationProp<TrainersStackParamsList, 'CategoriesSelect'>;
@@ -26,6 +33,15 @@ export type TrainersSelectNavigationProp = StackNavigationProp<TrainersStackPara
 export type TrainerDetailsRoute = RouteProp<TrainersStackParamsList, 'TrainerDetails'>;
 export type TrainerDetailsNavigationProp = StackNavigationProp<TrainersStackParamsList, 'TrainerDetails'>;
 
+export type TrainerAppointmentRoute = RouteProp<TrainersStackParamsList, 'TrainerAppointment'>;
+export type TrainerAppointmentNavigationProp = StackNavigationProp<TrainersStackParamsList, 'TrainerAppointment'>;
+
+export type ClassSelectRoute = RouteProp<ClassesStackParamsList, 'ClassesSelect'>;
+export type ClassSelectNavigationProp = StackNavigationProp<ClassesStackParamsList, 'ClassesSelect'>;
+
+export type ClassDetailsRoute = RouteProp<ClassesStackParamsList, 'ClassDetails'>;
+export type ClassDetailsNavigationProp = StackNavigationProp<ClassesStackParamsList, 'ClassDetails'>;
+
 export type RootDrawerParamsList = {
   Tabs: undefined;
   AddTask: undefined;
@@ -33,6 +49,7 @@ export type RootDrawerParamsList = {
 
 export type RootTabParamsList = {
   Home: undefined;
+  ClassesScreen: undefined;
   TrainersScreen: undefined;
 };
 

@@ -1,5 +1,3 @@
-import firestore from '@react-native-firebase/firestore';
-import { useEffect, useState } from 'react';
 import { ImageProps, SafeAreaView, View } from 'react-native';
 
 import {
@@ -17,6 +15,7 @@ import {
 } from '@ui-kitten/components';
 
 import { TrainersSelectNavigationProp, TrainersSelectRoute } from '../../../constants';
+import useFetchData from '../../../hooks/useFetchData';
 import { TrainerProfile } from './types';
 
 const themedStyles = StyleService.create({
@@ -42,6 +41,8 @@ const TrainersSelect = ({ navigation, route }: TrainersSelectNavigationProps) =>
 
   const { category } = route.params;
 
+  const [trainers, loading] = useFetchData<TrainerProfile>('trainers', ['level', '==', String(category)]);
+
   const onPress = (trainer: TrainerProfile) => {
     navigation.navigate('TrainerDetails', { trainer, category });
   };
@@ -51,26 +52,6 @@ const TrainersSelect = ({ navigation, route }: TrainersSelectNavigationProps) =>
   };
 
   const BackAction = () => <TopNavigationAction icon={BackIcon} onPress={navigateBack} />;
-
-  const [trainers, setTrainers] = useState<TrainerProfile[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const trainersDocs = (await firestore().collection('trainers').where('level', '==', String(category)).get())
-          .docs;
-        setTrainers(trainersDocs.map(doc => doc.data() as TrainerProfile));
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [category]);
 
   const renderItemAccessory = (trainer: TrainerProfile) => () => {
     return (
