@@ -1,4 +1,4 @@
-import { Image, ImageProps, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Image, ImageProps, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   Button,
@@ -17,10 +17,13 @@ import { TrainerDetailsNavigationProp, TrainerDetailsRoute } from '../../../cons
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'red',
   },
   layoutContainer: {
     flex: 1,
     padding: 24,
+    paddingTop: 16,
+    paddingBottom: 0,
   },
   text: {
     marginTop: 20,
@@ -30,18 +33,24 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 20,
   },
-  footerControl: {
-    marginHorizontal: 2,
+  bookSession: {
+    marginHorizontal: 50,
+    marginTop: 20,
+    marginBottom: 20,
   },
   name: {
     marginTop: 5,
   },
   alignCenter: {
     alignItems: 'center',
+    textAlign: 'center',
   },
-  image: { width: 200, height: 200, borderRadius: 100 },
+  image: { width: 150, height: 150, borderRadius: 100 },
   divider: {
-    marginVertical: 16,
+    marginVertical: 20,
+  },
+  outerWrapper: {
+    backgroundColor: 'orange',
   },
 });
 
@@ -74,46 +83,46 @@ const TrainerDetail = ({ navigation, route }: TrainerDetailsNavigationProps) => 
     <SafeAreaView style={themeStyles.container}>
       <TopNavigation title="Trainer info" alignment="center" accessoryLeft={BackAction} />
       <Layout style={styles.layoutContainer} level="1">
-        <View style={styles.alignCenter}>
-          <Image source={require('../../../assets/icon.png')} style={styles.image} />
-          <Text style={styles.name} category="h6">
-            Level {category} trainer
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.alignCenter}>
+            <Image source={require('../../../assets/icon.png')} style={styles.image} />
+            <Text style={styles.name} category="h6">
+              Level {category} trainer
+            </Text>
+            <Text style={styles.name} category="h4">
+              {trainer.name}
+            </Text>
+          </View>
+
+          <Divider style={styles.divider} />
+
+          <Text style={styles.name} category="label">
+            Areas of expertise: {trainer.areasOfExpertise}
           </Text>
-          <Text style={styles.name} category="h4">
-            {trainer.name}
+
+          <Text style={styles.name} category="label">
+            Certifications: {trainer.certifications}
           </Text>
-        </View>
 
-        <Divider style={styles.divider} />
+          <Text category="p1" style={styles.text}>
+            {trainer.longDescription}
+          </Text>
 
-        <Text style={styles.name} category="label">
-          Certifications: {trainer.certifications}
-        </Text>
-        <Text style={styles.name} category="label">
-          Areas of expertise: {trainer.areasOfExpertise}
-        </Text>
+          <Divider style={styles.divider} />
 
-        <Text category="p1" style={styles.text}>
-          {trainer.longDescription}
-        </Text>
+          <Text style={styles.alignCenter} category="s1">
+            Available: {trainer.availability}
+          </Text>
 
-        <Divider style={styles.divider} />
-
-        <Text category="s1">Available: {trainer.availability}</Text>
-
-        <View style={styles.footerContainer}>
-          <Button style={styles.footerControl} size="small" status="basic">
-            CANCEL
-          </Button>
           <Button
             onPress={() => {
               navigation.navigate('TrainerAppointment', { trainer });
             }}
-            style={styles.footerControl}
+            style={styles.bookSession}
             size="small">
             BOOK TRAINING SESSION
           </Button>
-        </View>
+        </ScrollView>
       </Layout>
     </SafeAreaView>
   );

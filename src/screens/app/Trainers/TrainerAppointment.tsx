@@ -5,11 +5,14 @@ import { useRecoilValue } from 'recoil';
 
 import {
   Button,
+  Card,
   Datepicker,
   Divider,
   Icon,
   IndexPath,
   Layout,
+  Modal,
+  NativeDateService,
   Select,
   SelectItem,
   Spinner,
@@ -42,11 +45,12 @@ const styles = StyleSheet.create({
   },
   footerContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     marginTop: 20,
   },
   footerControl: {
-    marginHorizontal: 2,
+    marginHorizontal: 6,
+    width: '40%',
   },
   name: {
     marginTop: 5,
@@ -54,11 +58,27 @@ const styles = StyleSheet.create({
   alignCenter: {
     alignItems: 'center',
   },
-  image: { width: 200, height: 200, borderRadius: 100 },
+  image: { width: 150, height: 150, borderRadius: 100 },
   divider: {
-    marginVertical: 16,
+    marginVertical: 20,
   },
   spinner: { justifyContent: 'center', alignItems: 'center', marginTop: '70%' },
+  timeSelector: { marginTop: 20 },
+  selectedDateText: {
+    textAlign: 'center',
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modal: {
+    width: '80%',
+  },
+  modalText: {
+    textAlign: 'center',
+  },
+  modalButton: {
+    marginTop: 16,
+  },
 });
 
 const themedStyles = StyleService.create({
@@ -94,6 +114,7 @@ const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationP
   const [selectData, setSelectData] = useState<string[]>([]);
   const [data, setData] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const userRef = firestore().doc(`users/${user?.uid}`);
 
@@ -187,9 +208,12 @@ const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationP
 
     setData(d => [...d, doc]);
     setSelectedIndex(new IndexPath(0));
+    setShowModal(true);
   };
 
   const filter = (d: Date): boolean => trainer.availabilityDays.find(day => day === d.getDay()) !== undefined;
+  const formatDateService = new NativeDateService('en', { format: 'DD/MM/YYYY' });
+  const formattedDate = formatDateService.format(date, 'DD/MM/YYYY');
 
   return (
     <SafeAreaView style={themeStyles.container}>
@@ -210,9 +234,32 @@ const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationP
 
           <Divider style={styles.divider} />
 
-          <Text category="h6">{`Selected date: ${date.toLocaleDateString()}`}</Text>
+          <Modal
+            style={styles.modal}
+            visible={showModal}
+            backdropStyle={styles.backdrop}
+            onBackdropPress={() => setShowModal(false)}>
+            <Card disabled={true}>
+              <Text style={styles.modalText} category="h6">
+                Your session with {trainer.name} has been booked! 😻
+              </Text>
+              <Text style={styles.modalText} category="s1">
+                Date: {formattedDate}
+              </Text>
+              <Text style={styles.modalText} category="s1">
+                Time: {displayValue}
+              </Text>
+              <Button status="success" style={styles.modalButton} onPress={() => setShowModal(false)}>
+                DISMISS
+              </Button>
+            </Card>
+          </Modal>
+
+          <Text style={styles.selectedDateText} category="h6">{`Selected date: ${formattedDate}`}</Text>
 
           <Datepicker
+            dateService={formatDateService}
+            style={styles.timeSelector}
             min={now}
             max={new Date(now.getFullYear(), now.getMonth() + 3, now.getDate())}
             filter={filter}
@@ -220,24 +267,30 @@ const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationP
             onSelect={setDate}
           />
 
-          {selectData.length ? (
-            <Select value={displayValue} selectedIndex={selectedIndex} onSelect={setSelectedIndex}>
-              {selectData.map((slot: string) => {
-                return <SelectItem key={slot} title={slot} />;
-              })}
-            </Select>
-          ) : (
-            <Text category="h6">No slots available for this day</Text>
-          )}
+          <View style={styles.timeSelector}>
+            {selectData.length ? (
+              <Select value={displayValue} selectedIndex={selectedIndex} onSelect={setSelectedIndex}>
+                {selectData.map((slot: string) => {
+                  return <SelectItem key={slot} title={slot} />;
+                })}
+              </Select>
+            ) : (
+              <Text category="h6">No slots available for this day</Text>
+            )}
+          </View>
 
           <Divider style={styles.divider} />
 
           <View style={styles.footerContainer}>
-            <Button style={styles.footerControl} size="small" status="basic">
+            <Button style={styles.footerControl} size="small" status="basic" onPress={navigateBack}>
               CANCEL
             </Button>
-            <Button onPress={bookTrainingSession} style={styles.footerControl} size="small">
-              ACCEPT
+            <Button
+              disabled={!displayValue || !date}
+              onPress={bookTrainingSession}
+              style={styles.footerControl}
+              size="small">
+              BOOK
             </Button>
           </View>
         </Layout>

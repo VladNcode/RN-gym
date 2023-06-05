@@ -1,4 +1,4 @@
-import { Dimensions, Image, ImageProps, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Dimensions, Image, ImageProps, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   Button,
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
   layoutContainer: {
     flex: 1,
-    padding: 24,
+    paddingHorizontal: 24,
   },
   text: {
     marginTop: 20,
@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginTop: 20,
+    marginBottom: 20,
   },
   footerControl: {
     marginHorizontal: 2,
@@ -76,47 +77,42 @@ const ClassDetails = ({ navigation, route }: ClassDetailsNavigationProps) => {
     <SafeAreaView style={themeStyles.container}>
       <TopNavigation title="Class info" alignment="center" accessoryLeft={BackAction} />
       <Layout style={styles.layoutContainer} level="1">
-        <View style={styles.alignCenter}>
-          <Image source={require('../../../assets/icon.png')} style={styles.image} />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.alignCenter}>
+            <Image source={require('../../../assets/icon.png')} style={styles.image} />
 
-          <Text style={styles.name} category="h4">
-            {classInfo.name}
+            <Text style={styles.name} category="h4">
+              {classInfo.name}
+            </Text>
+
+            <Text style={styles.name} category="h6">
+              A class by: {classInfo.instructor}
+            </Text>
+
+            <Text style={styles.name} category="h6">
+              Location: {classInfo.location}
+            </Text>
+          </View>
+
+          <Divider style={styles.divider} />
+
+          <Text category="p1" style={styles.text}>
+            {classInfo.longDescription}
           </Text>
 
-          <Text style={styles.name} category="h6">
-            A class by: {classInfo.instructor}
-          </Text>
+          <Divider style={styles.divider} />
 
-          <Text style={styles.name} category="h6">
-            Location: {classInfo.location}
-          </Text>
-        </View>
+          <Text category="s1">{classInfo.dateAndTime}</Text>
 
-        <Divider style={styles.divider} />
-
-        {/* <Text style={styles.name} category="label">
-          Certifications: {trainer.certifications}
-        </Text>
-        <Text style={styles.name} category="label">
-          Areas of expertise: {trainer.areasOfExpertise}
-        </Text> */}
-
-        <Text category="p1" style={styles.text}>
-          {classInfo.longDescription}
-        </Text>
-
-        <Divider style={styles.divider} />
-
-        <Text category="s1">{classInfo.dateAndTime}</Text>
-
-        <View style={styles.footerContainer}>
-          <Button style={styles.footerControl} size="small" status="basic">
-            CANCEL
-          </Button>
-          <Button style={styles.footerControl} size="small">
-            ACCEPT
-          </Button>
-        </View>
+          <View style={styles.footerContainer}>
+            <Button style={styles.footerControl} size="small" status="basic">
+              CANCEL
+            </Button>
+            <Button style={styles.footerControl} size="small">
+              ACCEPT
+            </Button>
+          </View>
+        </ScrollView>
       </Layout>
     </SafeAreaView>
   );
