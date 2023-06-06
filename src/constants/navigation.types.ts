@@ -4,7 +4,7 @@ import { DrawerContentComponentProps } from '@react-navigation/drawer/lib/typesc
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import { GymClass } from '../screens/app/Classes/types';
+import { GymClassWidthoutRefs } from '../screens/app/Classes/types';
 import { TrainerProfile } from '../screens/app/Trainers/types';
 
 export type RootStackParamsList = {
@@ -22,7 +22,8 @@ export type TrainersStackParamsList = {
 
 export type ClassesStackParamsList = {
   ClassesSelect: undefined;
-  ClassDetails: { classInfo: GymClass };
+  ClassDetails: { classInfo: GymClassWidthoutRefs };
+  ClassAppointment: { classInfo: GymClassWidthoutRefs };
 };
 
 export type CategoriesSelectNavigationProp = StackNavigationProp<TrainersStackParamsList, 'CategoriesSelect'>;
@@ -41,6 +42,9 @@ export type ClassSelectNavigationProp = StackNavigationProp<ClassesStackParamsLi
 
 export type ClassDetailsRoute = RouteProp<ClassesStackParamsList, 'ClassDetails'>;
 export type ClassDetailsNavigationProp = StackNavigationProp<ClassesStackParamsList, 'ClassDetails'>;
+
+export type ClassAppointmentRoute = RouteProp<ClassesStackParamsList, 'ClassAppointment'>;
+export type ClassAppointmentNavigationProp = StackNavigationProp<ClassesStackParamsList, 'ClassAppointment'>;
 
 export type RootDrawerParamsList = {
   Tabs: undefined;

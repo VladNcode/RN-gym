@@ -34,7 +34,11 @@ const ClassesSelect = ({ navigation }: ClassSelectNavigationProps): React.ReactE
   const styles = useStyleSheet(themedStyles);
 
   const renderItemAccessory = (classInfo: GymClass): React.ReactElement => (
-    <Button onPress={() => navigation.navigate('ClassDetails', { classInfo })} size="tiny">
+    <Button
+      onPress={() =>
+        navigation.navigate('ClassDetails', { classInfo: { ...classInfo, trainer: classInfo.trainer.id } })
+      }
+      size="tiny">
       SELECT
     </Button>
   );

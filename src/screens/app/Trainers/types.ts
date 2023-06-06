@@ -18,3 +18,12 @@ export interface Booking {
   userId: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>;
   trainerId: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>;
 }
+
+export interface ClassBooking {
+  id: string;
+  date: string;
+  limit: number;
+  participants: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>[];
+  trainerId: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>;
+  classId: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>;
+}

@@ -108,7 +108,12 @@ const ClassDetails = ({ navigation, route }: ClassDetailsNavigationProps) => {
             <Button style={styles.footerControl} size="small" status="basic">
               CANCEL
             </Button>
-            <Button style={styles.footerControl} size="small">
+            <Button
+              style={styles.footerControl}
+              size="small"
+              onPress={() => {
+                navigation.navigate('ClassAppointment', { classInfo });
+              }}>
               ACCEPT
             </Button>
           </View>

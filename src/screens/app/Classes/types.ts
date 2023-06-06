@@ -1,3 +1,5 @@
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+
 interface GymClass {
   name: string;
   dateAndTime: string;
@@ -5,6 +7,23 @@ interface GymClass {
   instructor: string;
   shortDescription: string;
   longDescription: string;
+  availabilityDays: number[];
+  id: string;
+  trainer: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>;
+  limit: number;
 }
 
-export type { GymClass };
+interface GymClassWidthoutRefs {
+  name: string;
+  dateAndTime: string;
+  location: string;
+  instructor: string;
+  shortDescription: string;
+  longDescription: string;
+  availabilityDays: number[];
+  id: string;
+  trainer: string;
+  limit: number;
+}
+
+export type { GymClass, GymClassWidthoutRefs };
