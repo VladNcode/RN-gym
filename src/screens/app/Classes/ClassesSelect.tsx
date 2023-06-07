@@ -5,6 +5,7 @@ import {
   Button,
   Divider,
   Icon,
+  Layout,
   List,
   ListItem,
   Spinner,
@@ -20,7 +21,6 @@ import { GymClass } from './types';
 const themedStyles = StyleService.create({
   container: {
     flex: 1,
-    backgroundColor: 'color-basic-800',
   },
   spinner: { justifyContent: 'center', alignItems: 'center', marginTop: '70%' },
 });
@@ -58,18 +58,20 @@ const ClassesSelect = ({ navigation }: ClassSelectNavigationProps): React.ReactE
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TopNavigation title="Select class" alignment="center" />
-      <Divider />
+    <Layout style={styles.container} level="1">
+      <SafeAreaView style={styles.container}>
+        <TopNavigation title="Select class" alignment="center" />
+        <Divider />
 
-      {loading ? (
-        <View style={styles.spinner}>
-          <Spinner size="giant" />
-        </View>
-      ) : (
-        <List ItemSeparatorComponent={Divider} data={classes} renderItem={renderItem} />
-      )}
-    </SafeAreaView>
+        {loading ? (
+          <View style={styles.spinner}>
+            <Spinner size="giant" />
+          </View>
+        ) : (
+          <List ItemSeparatorComponent={Divider} data={classes} renderItem={renderItem} />
+        )}
+      </SafeAreaView>
+    </Layout>
   );
 };
 

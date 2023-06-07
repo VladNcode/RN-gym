@@ -5,6 +5,7 @@ import {
   Button,
   Divider,
   Icon,
+  Layout,
   List,
   ListItem,
   Spinner,
@@ -21,7 +22,6 @@ import { TrainerProfile } from './types';
 const themedStyles = StyleService.create({
   container: {
     flex: 1,
-    backgroundColor: 'color-basic-800',
   },
   itemImage: {
     tintColor: undefined,
@@ -86,17 +86,19 @@ const TrainersSelect = ({ navigation, route }: TrainersSelectNavigationProps) =>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TopNavigation title="Select trainer" alignment="center" accessoryLeft={BackAction} />
-      <Divider />
-      {loading ? (
-        <View style={styles.spinner}>
-          <Spinner size="giant" />
-        </View>
-      ) : (
-        <List ItemSeparatorComponent={Divider} data={trainers} renderItem={renderItem} />
-      )}
-    </SafeAreaView>
+    <Layout style={styles.container} level="1">
+      <SafeAreaView style={styles.container}>
+        <TopNavigation title="Select trainer" alignment="center" accessoryLeft={BackAction} />
+        <Divider />
+        {loading ? (
+          <View style={styles.spinner}>
+            <Spinner size="giant" />
+          </View>
+        ) : (
+          <List ItemSeparatorComponent={Divider} data={trainers} renderItem={renderItem} />
+        )}
+      </SafeAreaView>
+    </Layout>
   );
 };
 

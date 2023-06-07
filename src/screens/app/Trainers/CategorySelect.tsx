@@ -5,6 +5,7 @@ import {
   Divider,
   Icon,
   IconElement,
+  Layout,
   List,
   ListItem,
   StyleService,
@@ -17,7 +18,6 @@ import { CategoriesSelectNavigationProp } from '../../../constants';
 const themedStyles = StyleService.create({
   container: {
     flex: 1,
-    backgroundColor: 'color-basic-800',
   },
 });
 
@@ -82,11 +82,13 @@ const CategoriesSelect = ({ navigation }: { navigation: CategoriesSelectNavigati
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TopNavigation title="Select trainer category" alignment="center" />
-      <Divider />
-      <List ItemSeparatorComponent={Divider} data={categories} renderItem={renderItem} />
-    </SafeAreaView>
+    <Layout style={styles.container} level="1">
+      <SafeAreaView style={styles.container}>
+        <TopNavigation title="Select trainer category" alignment="center" />
+        <Divider />
+        <List ItemSeparatorComponent={Divider} data={categories} renderItem={renderItem} />
+      </SafeAreaView>
+    </Layout>
   );
 };
 

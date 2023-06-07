@@ -13,11 +13,9 @@ import {
   Modal,
   NativeDateService,
   Spinner,
-  StyleService,
   Text,
   TopNavigation,
   TopNavigationAction,
-  useStyleSheet,
 } from '@ui-kitten/components';
 import { Settings } from 'luxon';
 
@@ -81,13 +79,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const themedStyles = StyleService.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'color-basic-800',
-  },
-});
-
 interface ClassAppointmentNavigationProps {
   route: ClassAppointmentRoute;
   navigation: ClassAppointmentNavigationProp;
@@ -97,7 +88,6 @@ const BackIcon = (props: Partial<ImageProps> | undefined) => <Icon {...props} na
 
 const ClassAppointment = ({ navigation, route }: ClassAppointmentNavigationProps) => {
   const user = useRecoilValue(userState);
-  const themeStyles = useStyleSheet(themedStyles);
 
   const { classInfo } = route.params;
 
@@ -205,84 +195,86 @@ const ClassAppointment = ({ navigation, route }: ClassAppointmentNavigationProps
   const filter = (d: Date): boolean => classInfo.availabilityDays.find(day => day === d.getDay()) !== undefined;
 
   return (
-    <SafeAreaView style={themeStyles.container}>
-      <TopNavigation title="Book a training session" alignment="center" accessoryLeft={BackAction} />
-      {loading ? (
-        <View style={styles.spinner}>
-          <Spinner size="giant" />
-        </View>
-      ) : (
-        <Layout style={styles.layoutContainer} level="1">
-          <View style={styles.alignCenter}>
-            <Image source={require('../../../assets/icon.png')} style={styles.image} />
-
-            <Text style={styles.name} category="h4">
-              {classInfo.name}
-            </Text>
+    <Layout style={styles.container} level="1">
+      <SafeAreaView style={styles.container}>
+        <TopNavigation title="Book a training session" alignment="center" accessoryLeft={BackAction} />
+        {loading ? (
+          <View style={styles.spinner}>
+            <Spinner size="giant" />
           </View>
+        ) : (
+          <Layout style={styles.layoutContainer} level="1">
+            <View style={styles.alignCenter}>
+              <Image source={require('../../../assets/icon.png')} style={styles.image} />
 
-          <Divider style={styles.divider} />
+              <Text style={styles.name} category="h4">
+                {classInfo.name}
+              </Text>
+            </View>
 
-          <Modal
-            style={styles.modal}
-            visible={showModal}
-            backdropStyle={styles.backdrop}
-            onBackdropPress={() => setShowModal(false)}>
-            <Card disabled={true}>
-              <Text style={styles.modalText} category="h6">
-                😻 Your signed up for a {classInfo.name} class!
+            <Divider style={styles.divider} />
+
+            <Modal
+              style={styles.modal}
+              visible={showModal}
+              backdropStyle={styles.backdrop}
+              onBackdropPress={() => setShowModal(false)}>
+              <Card disabled={true}>
+                <Text style={styles.modalText} category="h6">
+                  😻 Your signed up for a {classInfo.name} class!
+                </Text>
+                <Text style={styles.modalText} category="s1">
+                  Time: {classInfo.dateAndTime}
+                </Text>
+                <Button status="success" style={styles.modalButton} onPress={() => setShowModal(false)}>
+                  DISMISS
+                </Button>
+              </Card>
+            </Modal>
+
+            <Text style={styles.selectedDateText} category="h6">{`Selected date: ${formattedDate}`}</Text>
+            <Text
+              style={styles.selectedDateText}
+              category="h6">{`${usersEnrolledCount}/${classInfo.limit} participants`}</Text>
+
+            <Datepicker
+              dateService={formatDateService}
+              style={styles.timeSelector}
+              min={now}
+              max={new Date(now.getFullYear(), now.getMonth() + 3, now.getDate())}
+              filter={filter}
+              date={date}
+              onSelect={setDate}
+            />
+
+            {alreadyBooken && (
+              <Text style={styles.alreadyEnrolled} category="label">
+                You have already enrolled for this day
               </Text>
-              <Text style={styles.modalText} category="s1">
-                Time: {classInfo.dateAndTime}
-              </Text>
-              <Button status="success" style={styles.modalButton} onPress={() => setShowModal(false)}>
-                DISMISS
+            )}
+
+            {data && classInfo.limit === usersEnrolledCount && !alreadyBooken && (
+              <Text category="h6">No slots available for this day</Text>
+            )}
+
+            <Divider style={styles.divider} />
+
+            <View style={styles.footerContainer}>
+              <Button style={styles.footerControl} size="small" status="basic" onPress={navigateBack}>
+                CANCEL
               </Button>
-            </Card>
-          </Modal>
-
-          <Text style={styles.selectedDateText} category="h6">{`Selected date: ${formattedDate}`}</Text>
-          <Text
-            style={styles.selectedDateText}
-            category="h6">{`${usersEnrolledCount}/${classInfo.limit} participants`}</Text>
-
-          <Datepicker
-            dateService={formatDateService}
-            style={styles.timeSelector}
-            min={now}
-            max={new Date(now.getFullYear(), now.getMonth() + 3, now.getDate())}
-            filter={filter}
-            date={date}
-            onSelect={setDate}
-          />
-
-          {alreadyBooken && (
-            <Text style={styles.alreadyEnrolled} category="label">
-              You have already enrolled for this day
-            </Text>
-          )}
-
-          {data && classInfo.limit === usersEnrolledCount && !alreadyBooken && (
-            <Text category="h6">No slots available for this day</Text>
-          )}
-
-          <Divider style={styles.divider} />
-
-          <View style={styles.footerContainer}>
-            <Button style={styles.footerControl} size="small" status="basic" onPress={navigateBack}>
-              CANCEL
-            </Button>
-            <Button
-              disabled={!date || classInfo.limit === usersEnrolledCount || !!alreadyBooken}
-              onPress={bookTrainingSession}
-              style={styles.footerControl}
-              size="small">
-              BOOK
-            </Button>
-          </View>
-        </Layout>
-      )}
-    </SafeAreaView>
+              <Button
+                disabled={!date || classInfo.limit === usersEnrolledCount || !!alreadyBooken}
+                onPress={bookTrainingSession}
+                style={styles.footerControl}
+                size="small">
+                BOOK
+              </Button>
+            </View>
+          </Layout>
+        )}
+      </SafeAreaView>
+    </Layout>
   );
 };
 

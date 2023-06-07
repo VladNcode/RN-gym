@@ -68,5 +68,6 @@
   "color-basic-transparent-500": "rgba(128, 128, 128, 0.4)",
   "color-basic-transparent-600": "rgba(128, 128, 128, 0.48)",
 
-  "text-basic-color": "$color-basic-300"
+  "text-basic-color": "$color-basic-300",
+  "text-alternate-color": "$color-basic-900"
 }

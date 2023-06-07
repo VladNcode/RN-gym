@@ -1,37 +1,34 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { SafeAreaView } from 'react-native';
+import React, { useState } from 'react';
+import { Dimensions, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   Button,
-  Divider,
+  Card,
   Icon,
   IconElement,
-  List,
-  ListItem,
+  Modal,
   StyleService,
+  Text,
   TopNavigation,
   TopNavigationAction,
   useStyleSheet,
 } from '@ui-kitten/components';
 
-import { gymClasses } from '../../../mock/gymClasses';
+import PaymentPage from './PaymentPage';
+
+const { width } = Dimensions.get('window');
 
 const themedStyles = StyleService.create({
   container: {
     flex: 1,
-    backgroundColor: 'color-basic-800',
+    // backgroundColor: 'color-basic-800',
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
 });
-
-interface GymClass {
-  name: string;
-  dateAndTime: string;
-  location: string;
-  instructor: string;
-  shortDescription: string;
-  longDescription: string;
-}
 
 const MenuIcon = (props: any): IconElement => <Icon {...props} name="menu-outline" />;
 
@@ -43,21 +40,7 @@ const Home = (): React.ReactElement => {
   const styles = useStyleSheet(themedStyles);
   const navigation = useNavigation<any>();
 
-  const renderItemAccessory = (): React.ReactElement => (
-    <Button onPress={() => navigation.openDrawer()} size="tiny">
-      SELECT
-    </Button>
-  );
-  const renderItemIcon = (props: any): IconElement => <Icon {...props} name="clock-outline" />;
-
-  const renderItem = ({ item }: { item: GymClass }): React.ReactElement => (
-    <ListItem
-      title={item.name}
-      description={item.shortDescription}
-      accessoryLeft={renderItemIcon}
-      accessoryRight={renderItemAccessory}
-    />
-  );
+  const [visible, setVisible] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -68,8 +51,13 @@ const Home = (): React.ReactElement => {
         title="Home"
         alignment="center"
       />
-      <Divider />
-      <List ItemSeparatorComponent={Divider} data={gymClasses} renderItem={renderItem} />
+      <PaymentPage />
+      <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={() => setVisible(false)}>
+        <Card style={{ width: width * 0.8 }} disabled={true}>
+          <Text>Welcome to UI Kitten 😻</Text>
+          <Button onPress={() => setVisible(false)}>DISMISS</Button>
+        </Card>
+      </Modal>
     </SafeAreaView>
   );
 };

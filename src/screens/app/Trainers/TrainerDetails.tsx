@@ -17,7 +17,6 @@ import { TrainerDetailsNavigationProp, TrainerDetailsRoute } from '../../../cons
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'red',
   },
   layoutContainer: {
     flex: 1,
@@ -80,51 +79,53 @@ const TrainerDetail = ({ navigation, route }: TrainerDetailsNavigationProps) => 
   const BackAction = () => <TopNavigationAction icon={BackIcon} onPress={navigateBack} />;
 
   return (
-    <SafeAreaView style={themeStyles.container}>
-      <TopNavigation title="Trainer info" alignment="center" accessoryLeft={BackAction} />
-      <Layout style={styles.layoutContainer} level="1">
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.alignCenter}>
-            <Image source={require('../../../assets/icon.png')} style={styles.image} />
-            <Text style={styles.name} category="h6">
-              Level {category} trainer
+    <Layout style={styles.container} level="1">
+      <SafeAreaView style={styles.container}>
+        <TopNavigation title="Trainer info" alignment="center" accessoryLeft={BackAction} />
+        <Layout style={styles.layoutContainer} level="1">
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.alignCenter}>
+              <Image source={require('../../../assets/icon.png')} style={styles.image} />
+              <Text style={styles.name} category="h6">
+                Level {category} trainer
+              </Text>
+              <Text style={styles.name} category="h4">
+                {trainer.name}
+              </Text>
+            </View>
+
+            <Divider style={styles.divider} />
+
+            <Text style={styles.name} category="label">
+              Areas of expertise: {trainer.areasOfExpertise}
             </Text>
-            <Text style={styles.name} category="h4">
-              {trainer.name}
+
+            <Text style={styles.name} category="label">
+              Certifications: {trainer.certifications}
             </Text>
-          </View>
 
-          <Divider style={styles.divider} />
+            <Text category="p1" style={styles.text}>
+              {trainer.longDescription}
+            </Text>
 
-          <Text style={styles.name} category="label">
-            Areas of expertise: {trainer.areasOfExpertise}
-          </Text>
+            <Divider style={styles.divider} />
 
-          <Text style={styles.name} category="label">
-            Certifications: {trainer.certifications}
-          </Text>
+            <Text style={styles.alignCenter} category="s1">
+              Available: {trainer.availability}
+            </Text>
 
-          <Text category="p1" style={styles.text}>
-            {trainer.longDescription}
-          </Text>
-
-          <Divider style={styles.divider} />
-
-          <Text style={styles.alignCenter} category="s1">
-            Available: {trainer.availability}
-          </Text>
-
-          <Button
-            onPress={() => {
-              navigation.navigate('TrainerAppointment', { trainer });
-            }}
-            style={styles.bookSession}
-            size="small">
-            BOOK TRAINING SESSION
-          </Button>
-        </ScrollView>
-      </Layout>
-    </SafeAreaView>
+            <Button
+              onPress={() => {
+                navigation.navigate('TrainerAppointment', { trainer });
+              }}
+              style={styles.bookSession}
+              size="small">
+              BOOK TRAINING SESSION
+            </Button>
+          </ScrollView>
+        </Layout>
+      </SafeAreaView>
+    </Layout>
   );
 };
 
