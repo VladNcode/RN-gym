@@ -1,17 +1,20 @@
+import 'dotenv/config';
 import express from 'express';
 import Stripe from 'stripe';
 
-const stripe = new Stripe('secret_key', {
+if (!process.env.STRIPE_KEY) throw Error('Stripe key is missing in env');
+
+const stripe = new Stripe(process.env.STRIPE_KEY, {
   apiVersion: '2022-11-15',
   typescript: true,
 });
 const app = express();
 app.use(express.json());
 
-app.post('/create-payment-intent', async (_, res) => {
+app.post('/create-payment-intent', async (req, res) => {
   console.log('request');
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: 5000, // 50 usd
+    amount: req.body.amount * 100, // 50 usd
     currency: 'usd',
   });
 

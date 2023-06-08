@@ -8,7 +8,6 @@ import { Button, Layout, StyleService, useStyleSheet } from '@ui-kitten/componen
 const themedStyles = StyleService.create({
   container: {
     flex: 1,
-    // backgroundColor: 'color-basic-800',
   },
   cardStyle: {
     backgroundColor: 'color-basic-300' as const,
@@ -26,7 +25,7 @@ const themedStyles = StyleService.create({
 });
 
 const PaymentPage = () => {
-  const { confirmPayment } = useStripe();
+  const { confirmPayment, initPaymentSheet, presentPaymentSheet } = useStripe();
 
   const styles = useStyleSheet(themedStyles);
 
@@ -46,6 +45,11 @@ const PaymentPage = () => {
       .then(res => {
         console.log('intent', res);
         setKey((res as { clientSecret: string }).clientSecret);
+
+        initPaymentSheet({
+          paymentIntentClientSecret: key,
+          merchantDisplayName: 'Stripe.merchant',
+        });
       })
       .catch(e => {
         console.log(e);
@@ -73,6 +77,10 @@ const PaymentPage = () => {
     }
   };
 
+  const handleSheet = () => {
+    presentPaymentSheet();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Layout style={styles.layoutContainer} level="1">
@@ -91,6 +99,7 @@ const PaymentPage = () => {
           }}
         />
         <Button onPress={handleConfirmation}>Confirm payment</Button>
+        <Button onPress={handleSheet}>Initialize payment sheet</Button>
       </Layout>
     </SafeAreaView>
   );
