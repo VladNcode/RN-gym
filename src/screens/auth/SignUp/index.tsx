@@ -1,12 +1,12 @@
 import auth from '@react-native-firebase/auth';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Linking, ScrollView, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { Alert, ImageProps, Linking, ScrollView, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 
 import { Button, CheckBox, Icon, Input, Layout, Text } from '@ui-kitten/components';
 
-import { FooterLink } from '../../../components';
 import ErrorCaption from '../../../components/ErrorCaption';
+import FooterLink from '../../../components/FooterLink';
 import {
   PRIVACY_POLICY_LINK,
   SignUpNavigationProp,
@@ -88,13 +88,13 @@ export const SignUp = React.memo(({ navigation }: { navigation: SignUpNavigation
     setSecureTextEntry2(s => !s);
   };
 
-  const renderIcon = (props: any): React.ReactElement => (
+  const renderIcon = (props: Partial<ImageProps> | undefined): React.ReactElement => (
     <TouchableWithoutFeedback onPress={toggleSecureEntry}>
       <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} />
     </TouchableWithoutFeedback>
   );
 
-  const renderIcon2 = (props: any): React.ReactElement => (
+  const renderIcon2 = (props: Partial<ImageProps> | undefined): React.ReactElement => (
     <TouchableWithoutFeedback onPress={toggleSecureEntry2}>
       <Icon {...props} name={secureTextEntry2 ? 'eye-off' : 'eye'} />
     </TouchableWithoutFeedback>

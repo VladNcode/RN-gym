@@ -53,8 +53,10 @@ export type RootDrawerParamsList = {
 
 export type RootTabParamsList = {
   Home: undefined;
+  Shop: undefined;
   ClassesScreen: undefined;
   TrainersScreen: undefined;
+  Map: undefined;
 };
 
 export type OnboardingNavigationProp = StackNavigationProp<RootStackParamsList, 'Onboarding'>;

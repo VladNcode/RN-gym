@@ -1,12 +1,12 @@
 import auth from '@react-native-firebase/auth';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, TouchableWithoutFeedback, View } from 'react-native';
+import { Alert, ImageProps, TouchableWithoutFeedback, View } from 'react-native';
 
 import { Button, Icon, Input, Layout, Text } from '@ui-kitten/components';
 
-import { FooterLink } from '../../../components';
 import ErrorCaption from '../../../components/ErrorCaption';
+import FooterLink from '../../../components/FooterLink';
 import { SignInNavigationProp, isFirebaseSignInError } from '../../../constants';
 import { styles } from './styles';
 
@@ -61,7 +61,7 @@ export const SignIn = React.memo(({ navigation }: { navigation: SignInNavigation
     setSecureTextEntry(s => !s);
   };
 
-  const renderIcon = (props: any): React.ReactElement => (
+  const renderIcon = (props: Partial<ImageProps> | undefined): React.ReactElement => (
     <TouchableWithoutFeedback onPress={toggleSecureEntry}>
       <Icon {...props} name={secureTextEntry ? 'eye-off' : 'eye'} />
     </TouchableWithoutFeedback>

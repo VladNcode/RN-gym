@@ -1,4 +1,4 @@
-import { SafeAreaView } from 'react-native';
+import { ImageProps, SafeAreaView } from 'react-native';
 
 import {
   Button,
@@ -70,7 +70,9 @@ const CategoriesSelect = ({ navigation }: { navigation: CategoriesSelectNavigati
         SELECT
       </Button>
     );
-  const renderItemIcon = (props: any): IconElement => <Icon {...props} name="checkmark-circle-2-outline" />;
+  const renderItemIcon = (props: Partial<ImageProps> | undefined): IconElement => (
+    <Icon {...props} name="checkmark-circle-2-outline" />
+  );
 
   const renderItem = ({ item, index }: { item: IListItem; index: number }): React.ReactElement => (
     <ListItem

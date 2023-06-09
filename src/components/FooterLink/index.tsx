@@ -11,7 +11,7 @@ interface InputProps {
   onPress: () => void;
 }
 
-export const FooterLink = React.memo(({ text, linkText, onPress }: InputProps) => (
+const FooterLink = React.memo(({ text, linkText, onPress }: InputProps) => (
   <View style={styles.footer}>
     <Text category="h6">{text}</Text>
 
@@ -22,3 +22,5 @@ export const FooterLink = React.memo(({ text, linkText, onPress }: InputProps) =
     </TouchableOpacity>
   </View>
 ));
+
+export default FooterLink;
