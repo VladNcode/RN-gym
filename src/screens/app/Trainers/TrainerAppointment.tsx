@@ -16,11 +16,9 @@ import {
   Select,
   SelectItem,
   Spinner,
-  StyleService,
   Text,
   TopNavigation,
   TopNavigationAction,
-  useStyleSheet,
 } from '@ui-kitten/components';
 import { DateTime, Settings } from 'luxon';
 import { OutputSlot, getSlots } from 'slot-calculator';
@@ -29,7 +27,7 @@ import { TrainerAppointmentNavigationProp, TrainerAppointmentRoute } from '../..
 import { userState } from '../../../store/user';
 import findClosestAvailableClassDate from '../Classes/utils';
 import { parseTime } from './helpers';
-import { Booking } from './types';
+import { TrainerBooking } from './types';
 
 Settings.defaultZone = 'UTC';
 
@@ -82,13 +80,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const themedStyles = StyleService.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'color-basic-800',
-  },
-});
-
 interface TrainerAppointmentNavigationProps {
   route: TrainerAppointmentRoute;
   navigation: TrainerAppointmentNavigationProp;
@@ -98,7 +89,6 @@ const BackIcon = (props: Partial<ImageProps> | undefined) => <Icon {...props} na
 
 const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationProps) => {
   const user = useRecoilValue(userState);
-  const themeStyles = useStyleSheet(themedStyles);
 
   const { trainer } = route.params;
 
@@ -114,7 +104,7 @@ const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationP
   const [date, setDate] = useState(startDate);
   const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
   const [selectData, setSelectData] = useState<string[]>([]);
-  const [data, setData] = useState<Booking[]>([]);
+  const [data, setData] = useState<TrainerBooking[]>([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [bookedTime, setBookedTime] = useState<string>('');
@@ -127,12 +117,12 @@ const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationP
     const subscriber = firestore()
       .collection('trainerBookings')
       .where('trainerId', '==', trainerRef)
-      .where('date', '==', date.toLocaleDateString())
+      .where('date', '==', date)
       .onSnapshot(querySnapshot => {
-        const items: Booking[] = [];
+        const items: TrainerBooking[] = [];
 
         querySnapshot.forEach(documentSnapshot => {
-          items.push(documentSnapshot.data() as Booking);
+          items.push(documentSnapshot.data() as TrainerBooking);
         });
 
         setData(items);
@@ -146,11 +136,11 @@ const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationP
           await firestore()
             .collection('trainerBookings')
             .where('trainerId', '==', trainerRef)
-            .where('date', '==', date.toLocaleDateString())
+            .where('date', '==', date)
             .get()
         ).docs;
 
-        setData(classesDocs.map(doc => doc.data() as Booking));
+        setData(classesDocs.map(doc => doc.data() as TrainerBooking));
       } catch (error) {
         console.error(error);
       } finally {
@@ -200,10 +190,10 @@ const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationP
     const trainerRef = firestore().doc(`trainers/${trainer.id}`);
     const [f, t] = displayValue.split(' - ').map((time: string) => parseInt(time.slice(0, 2), 10));
 
-    const doc: Booking = {
+    const doc: TrainerBooking = {
       trainerId: trainerRef,
       userId: userRef,
-      date: date.toLocaleDateString(),
+      date,
       slot: [f, t],
     };
 

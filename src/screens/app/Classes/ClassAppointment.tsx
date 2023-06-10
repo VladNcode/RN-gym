@@ -17,14 +17,11 @@ import {
   TopNavigation,
   TopNavigationAction,
 } from '@ui-kitten/components';
-import { Settings } from 'luxon';
 
 import { ClassAppointmentNavigationProp, ClassAppointmentRoute } from '../../../constants';
 import { userState } from '../../../store/user';
 import { ClassBooking } from '../Trainers/types';
 import findClosestAvailableClassDate from './utils';
-
-Settings.defaultZone = 'UTC';
 
 const styles = StyleSheet.create({
   container: {
@@ -117,7 +114,7 @@ const ClassAppointment = ({ navigation, route }: ClassAppointmentNavigationProps
     const subscriber = firestore()
       .collection('classBookings')
       .where('classId', '==', classRef)
-      .where('date', '==', formattedDate)
+      .where('date', '==', date)
       .limit(1)
       .onSnapshot(querySnapshot => {
         const items: ClassBooking[] = [];
@@ -137,7 +134,7 @@ const ClassAppointment = ({ navigation, route }: ClassAppointmentNavigationProps
           await firestore()
             .collection('classBookings')
             .where('classId', '==', classRef)
-            .where('date', '==', formattedDate)
+            .where('date', '==', date)
             .limit(1)
             .get()
         ).docs;
@@ -175,7 +172,7 @@ const ClassAppointment = ({ navigation, route }: ClassAppointmentNavigationProps
           // Create new document
           docRef.set({
             classId: classRef,
-            date: formattedDate,
+            date,
             limit: classInfo.limit,
             participants: [userRef],
             trainerId: trainerRef,

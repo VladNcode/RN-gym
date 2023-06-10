@@ -12,12 +12,14 @@ export interface TrainerProfile {
   availabilityHours: [number, number];
 }
 
-export interface Booking {
-  date: string;
+export interface TrainerBooking {
+  date: Date;
   slot: [number, number];
   userId: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>;
   trainerId: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>;
 }
+
+export type FirebaseTrainerBooking = Omit<TrainerBooking, 'date'> & { date: { seconds: number; nanoseconds: number } };
 
 export interface ClassBooking {
   id: string;
@@ -27,3 +29,5 @@ export interface ClassBooking {
   trainerId: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>;
   classId: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>;
 }
+
+export type FirebaseClassBooking = Omit<ClassBooking, 'date'> & { date: { seconds: number; nanoseconds: number } };

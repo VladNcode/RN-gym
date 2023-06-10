@@ -1,45 +1,38 @@
-import { Dimensions, StyleSheet } from 'react-native';
-
-const { width } = Dimensions.get('window');
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  backdrop: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+  container: {
+    flex: 1,
+  },
   safeAreaContainer: {
     flex: 1,
-    paddingBottom: 20,
   },
-  cardContainer: {
+  bodyContainer: {
+    padding: 25,
+    paddingTop: 10,
+  },
+  header: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  title: {
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  logoutButton: {
+    borderWidth: 1,
+    borderColor: '#000',
+    paddingHorizontal: 12,
+  },
+  card: {
+    marginTop: 25,
+  },
+  infoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginTop: 10,
   },
-  cardImageContainer: {
-    borderRadius: 60,
-    backgroundColor: '#F7F9FC',
-    marginRight: 16,
-    padding: 12,
-  },
-  cardTextContainer: { flex: 1 },
-  cardPrice: { marginTop: 16 },
-  cardButton: { marginTop: 16 },
-  itemCard: { padding: 16 },
-  cartContainer: {
-    borderTopWidth: 1,
-    padding: 16,
-  },
-  footerControl: {
-    marginHorizontal: 6,
-    width: '40%',
-  },
-  checkoutText: { textAlign: 'center' },
-  checkoutButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 16,
-  },
-  modalCard: { width: width * 0.8, minHeight: 150, justifyContent: 'center', alignItems: 'center' },
-  modalButton: { marginTop: 16 },
+  spinner: { justifyContent: 'center', alignItems: 'center', marginTop: '70%' },
 });
 
 export default styles;
