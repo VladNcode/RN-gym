@@ -5,9 +5,9 @@ import { BottomNavigation, BottomNavigationTab, Icon, IconElement } from '@ui-ki
 
 import { RootTabParamsList } from '../constants';
 import Home from '../screens/app/Home/Home';
-import Map from '../screens/app/Map/Map';
 import Shop from '../screens/app/Shop/Shop';
 import Classes from './ClassesStack';
+import Locations from './LocationsStack';
 import Trainers from './Stack';
 
 const styles = StyleSheet.create({
@@ -34,7 +34,7 @@ const BottomTabBar = ({ navigation, state }: BottomTabBarProps) => {
       <BottomNavigationTab style={styles.bottomTab} title="Classes" icon={ActivityIcon} />
       <BottomNavigationTab style={styles.bottomTab} title="Trainers" icon={PersonIcon} />
       <BottomNavigationTab style={styles.bottomTab} title="Home" icon={HomeIcon} />
-      <BottomNavigationTab style={styles.bottomTab} title="Map" icon={MapIcon} />
+      <BottomNavigationTab style={styles.bottomTab} title="Locations" icon={MapIcon} />
       <BottomNavigationTab style={styles.bottomTab} title="Shop" icon={CartIcon} />
     </BottomNavigation>
   );
@@ -45,7 +45,7 @@ const BottomTabs = () => (
     <Screen name="ClassesScreen" component={Classes} />
     <Screen name="TrainersScreen" component={Trainers} />
     <Screen name="Home" component={Home} />
-    <Screen name="Map" component={Map} />
+    <Screen name="Locations" component={Locations} />
     <Screen name="Shop" component={Shop} />
   </Navigator>
 );

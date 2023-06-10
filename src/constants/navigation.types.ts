@@ -5,6 +5,7 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import { GymClassWidthoutRefs } from '../screens/app/Classes/types';
+import { GymLocation } from '../screens/app/Map/types';
 import { TrainerProfile } from '../screens/app/Trainers/types';
 
 export type RootStackParamsList = {
@@ -18,6 +19,11 @@ export type TrainersStackParamsList = {
   TrainersSelect: { category: number };
   TrainerDetails: { trainer: TrainerProfile; category: number };
   TrainerAppointment: { trainer: TrainerProfile };
+};
+
+export type LocationsStackParamsList = {
+  SelectLocations: undefined;
+  Map: { gymInfo: GymLocation };
 };
 
 export type ClassesStackParamsList = {
@@ -43,6 +49,12 @@ export type ClassSelectNavigationProp = StackNavigationProp<ClassesStackParamsLi
 export type ClassDetailsRoute = RouteProp<ClassesStackParamsList, 'ClassDetails'>;
 export type ClassDetailsNavigationProp = StackNavigationProp<ClassesStackParamsList, 'ClassDetails'>;
 
+export type SelectLocationsDetailsRoute = RouteProp<LocationsStackParamsList, 'SelectLocations'>;
+export type SelectLocationsDetailsNavigationProp = StackNavigationProp<LocationsStackParamsList, 'SelectLocations'>;
+
+export type MapDetailsRoute = RouteProp<LocationsStackParamsList, 'Map'>;
+export type MapDetailsNavigationProp = StackNavigationProp<LocationsStackParamsList, 'Map'>;
+
 export type ClassAppointmentRoute = RouteProp<ClassesStackParamsList, 'ClassAppointment'>;
 export type ClassAppointmentNavigationProp = StackNavigationProp<ClassesStackParamsList, 'ClassAppointment'>;
 
@@ -56,7 +68,7 @@ export type RootTabParamsList = {
   Shop: undefined;
   ClassesScreen: undefined;
   TrainersScreen: undefined;
-  Map: undefined;
+  Locations: undefined;
 };
 
 export type OnboardingNavigationProp = StackNavigationProp<RootStackParamsList, 'Onboarding'>;

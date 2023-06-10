@@ -1,5 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import 'react-native-gesture-handler';
+import { enableLatestRenderer } from 'react-native-maps';
 import { RecoilRoot } from 'recoil';
 
 import * as eva from '@eva-design/eva';
@@ -10,6 +11,8 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import mapping from './mapping.json';
 import { Routes } from './src/Routes';
 import theme from './theme.json';
+
+enableLatestRenderer();
 
 function App(): JSX.Element {
   const scheme: ['dark' | 'light'] = ['dark'];

@@ -70,8 +70,9 @@ const CategoriesSelect = ({ navigation }: { navigation: CategoriesSelectNavigati
         SELECT
       </Button>
     );
+
   const renderItemIcon = (props: Partial<ImageProps> | undefined): IconElement => (
-    <Icon {...props} name="checkmark-circle-2-outline" />
+    <Icon {...props} name="flash-outline" />
   );
 
   const renderItem = ({ item, index }: { item: IListItem; index: number }): React.ReactElement => (
