@@ -5,6 +5,9 @@ import { Linking, StyleSheet, Text, View } from 'react-native';
 import { Drawer, DrawerItem, IndexPath } from '@ui-kitten/components';
 
 import { PRIVACY_POLICY_LINK, RootDrawerParamsList, TERMS_AND_CONDITIONS_LINK } from '../constants';
+import WeightChart from '../screens/app/Progress/Charts/WeightChart';
+import MeasurementsScreen from '../screens/app/Progress/Measurements/Measurements';
+import WorkoutsScreen from '../screens/app/Progress/Workouts/Workouts';
 import useTheme from '../store/theme';
 import BottomTabs from './BottomTabs';
 
@@ -15,14 +18,6 @@ const styles = StyleSheet.create({
 });
 
 const { Navigator, Screen } = createDrawerNavigator<RootDrawerParamsList>();
-
-const AddTask = () => {
-  return (
-    <View>
-      <Text>AddTask Screen</Text>
-    </View>
-  );
-};
 
 const onLinkPress = (url: string) => {
   Linking.openURL(url);
@@ -57,7 +52,7 @@ export const DrawerNavigator = () => {
       screenOptions={{ headerShown: false, swipeEnabled: false }}
       drawerContent={props => <DrawerContent {...props} />}>
       <Screen name="Tabs" component={BottomTabs} />
-      <Screen name="AddTask" component={AddTask} />
+      <Screen name="AddTask" component={WeightChart} />
     </Navigator>
   );
 };

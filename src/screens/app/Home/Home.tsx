@@ -28,7 +28,7 @@ import { userState } from '../../../store/user';
 import { FirebaseClassBooking, FirebaseTrainerBooking } from '../Trainers/types';
 import styles from './styles';
 
-const getFormattedDateFromSeconds = (seconds: number) =>
+export const getFormattedDateFromSeconds = (seconds: number) =>
   DateTime.fromSeconds(seconds, { zone: 'Europe/Kyiv' }).toFormat('dd/MM/yyyy');
 
 const MenuIcon = (props: Partial<ImageProps> | undefined): IconElement => <Icon {...props} name="menu-outline" />;
