@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRecoilValue } from 'recoil';
 
 import {
+  Button,
   Card,
   Icon,
   IconElement,
@@ -24,6 +25,7 @@ import { DateTime } from 'luxon';
 import { RootDrawerParamsList } from '../../../constants';
 import useSnapshot from '../../../hooks/useSnapshot';
 import { userState } from '../../../store/user';
+import shareOnSocialMedia from '../../../utils/shareOnSocialMedia';
 import { FirebaseClassBooking, FirebaseTrainerBooking } from '../Trainers/types';
 import styles from './styles';
 
@@ -212,6 +214,7 @@ const Home = (): React.ReactElement => {
                 )}
               </Card>
             </View>
+            <Button onPress={() => shareOnSocialMedia({ message: 'Hello world!', title: 'Suh dude' })}>Share</Button>
           </>
         )}
       </SafeAreaView>
