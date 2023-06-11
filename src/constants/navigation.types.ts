@@ -32,6 +32,20 @@ export type ClassesStackParamsList = {
   ClassAppointment: { classInfo: GymClassWidthoutRefs };
 };
 
+export type StatsStackParamsList = {
+  StatsOverview: undefined;
+  WorkoutsForm: undefined;
+  MeasurementsForm: undefined;
+  WorkoutsCharts: undefined;
+  MeasurementsCharts: undefined;
+};
+
+export type StatsOverviewDetailsNavigationProp = StackNavigationProp<StatsStackParamsList, 'StatsOverview'>;
+export type StatsWorkoutFormNavigationProp = StackNavigationProp<StatsStackParamsList, 'WorkoutsForm'>;
+export type StatsWorkoutChartsNavigationProp = StackNavigationProp<StatsStackParamsList, 'WorkoutsCharts'>;
+export type StatsMeasurmentsFormNavigationProp = StackNavigationProp<StatsStackParamsList, 'MeasurementsForm'>;
+export type StatsMeasurmentsChartsNavigationProp = StackNavigationProp<StatsStackParamsList, 'MeasurementsCharts'>;
+
 export type CategoriesSelectNavigationProp = StackNavigationProp<TrainersStackParamsList, 'CategoriesSelect'>;
 
 export type TrainersSelectRoute = RouteProp<TrainersStackParamsList, 'TrainersSelect'>;
@@ -60,7 +74,7 @@ export type ClassAppointmentNavigationProp = StackNavigationProp<ClassesStackPar
 
 export type RootDrawerParamsList = {
   Tabs: undefined;
-  AddTask: undefined;
+  Stats: undefined;
 };
 
 export type RootTabParamsList = {

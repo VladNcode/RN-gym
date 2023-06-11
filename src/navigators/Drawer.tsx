@@ -1,15 +1,13 @@
 import auth from '@react-native-firebase/auth';
 import { DrawerContentComponentProps, createDrawerNavigator } from '@react-navigation/drawer';
-import { Linking, StyleSheet, Text, View } from 'react-native';
+import { Linking, StyleSheet } from 'react-native';
 
 import { Drawer, DrawerItem, IndexPath } from '@ui-kitten/components';
 
 import { PRIVACY_POLICY_LINK, RootDrawerParamsList, TERMS_AND_CONDITIONS_LINK } from '../constants';
-import WeightChart from '../screens/app/Progress/Charts/WeightChart';
-import MeasurementsScreen from '../screens/app/Progress/Measurements/Measurements';
-import WorkoutsScreen from '../screens/app/Progress/Workouts/Workouts';
 import useTheme from '../store/theme';
 import BottomTabs from './BottomTabs';
+import Stats from './StatsStack';
 
 const styles = StyleSheet.create({
   drawerItem: {
@@ -36,8 +34,8 @@ const DrawerContent = ({ navigation, state }: DrawerContentComponentProps) => {
       onSelect={index => {
         if (index.row < 2) navigation.navigate(state.routeNames[index.row]);
       }}>
-      <DrawerItem style={styles.drawerItem} title="Tabs" />
-      <DrawerItem title="AddTask" />
+      <DrawerItem style={styles.drawerItem} title="Home" />
+      <DrawerItem title="Stats" />
       <DrawerItem title="Privacy policy" onPress={() => onLinkPress(PRIVACY_POLICY_LINK)} />
       <DrawerItem title="Terms & Conditions" onPress={() => onLinkPress(TERMS_AND_CONDITIONS_LINK)} />
       <DrawerItem title="Toggle theme" onPress={toggle} />
@@ -52,7 +50,7 @@ export const DrawerNavigator = () => {
       screenOptions={{ headerShown: false, swipeEnabled: false }}
       drawerContent={props => <DrawerContent {...props} />}>
       <Screen name="Tabs" component={BottomTabs} />
-      <Screen name="AddTask" component={WeightChart} />
+      <Screen name="Stats" component={Stats} />
     </Navigator>
   );
 };

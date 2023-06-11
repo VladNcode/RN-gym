@@ -1,12 +1,18 @@
-import { Dimensions, StyleSheet } from 'react-native';
-
-const { width, height } = Dimensions.get('window');
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: width * 0.06,
-    paddingTop: height * 0.1,
+  },
+  safeAreaContainer: {
+    flex: 1,
+  },
+  layoutContainer: {
+    flex: 1,
+    paddingHorizontal: 24,
+  },
+  centerText: {
+    textAlign: 'center',
   },
   button: {
     marginTop: 46,

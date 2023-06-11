@@ -1,3 +1,4 @@
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { ImageProps, SafeAreaView, View } from 'react-native';
 
 import {

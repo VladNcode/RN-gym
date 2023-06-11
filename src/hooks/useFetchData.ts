@@ -1,7 +1,11 @@
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useEffect, useState } from 'react';
 
-type Where = Parameters<FirebaseFirestoreTypes.Query<FirebaseFirestoreTypes.DocumentData>['where']>;
+type Where = [
+  fieldPath: string | number | FirebaseFirestoreTypes.FieldPath,
+  opStr: FirebaseFirestoreTypes.WhereFilterOp,
+  value: string | number | boolean | Date,
+];
 
 type QueryBuild =
   | FirebaseFirestoreTypes.CollectionReference<FirebaseFirestoreTypes.DocumentData>
