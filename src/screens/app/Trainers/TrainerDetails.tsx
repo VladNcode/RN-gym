@@ -1,16 +1,6 @@
 import { Image, ImageProps, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
-import {
-  Button,
-  Divider,
-  Icon,
-  Layout,
-  StyleService,
-  Text,
-  TopNavigation,
-  TopNavigationAction,
-  useStyleSheet,
-} from '@ui-kitten/components';
+import { Button, Divider, Icon, Layout, Text, TopNavigation, TopNavigationAction } from '@ui-kitten/components';
 
 import { TrainerDetailsNavigationProp, TrainerDetailsRoute } from '../../../constants';
 
@@ -34,7 +24,7 @@ const styles = StyleSheet.create({
   },
   bookSession: {
     marginHorizontal: 50,
-    marginTop: 20,
+    marginTop: 30,
     marginBottom: 20,
   },
   name: {
@@ -53,13 +43,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const themedStyles = StyleService.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'color-basic-800',
-  },
-});
-
 interface TrainerDetailsNavigationProps {
   route: TrainerDetailsRoute;
   navigation: TrainerDetailsNavigationProp;
@@ -68,8 +51,6 @@ interface TrainerDetailsNavigationProps {
 const BackIcon = (props: Partial<ImageProps> | undefined) => <Icon {...props} name="arrow-back" />;
 
 const TrainerDetail = ({ navigation, route }: TrainerDetailsNavigationProps) => {
-  const themeStyles = useStyleSheet(themedStyles);
-
   const { trainer, category } = route.params;
 
   const navigateBack = () => {
@@ -120,7 +101,7 @@ const TrainerDetail = ({ navigation, route }: TrainerDetailsNavigationProps) => 
               }}
               style={styles.bookSession}
               size="small">
-              BOOK TRAINING SESSION
+              BOOK A TRAINING SESSION
             </Button>
           </ScrollView>
         </Layout>

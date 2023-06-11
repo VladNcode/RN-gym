@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 import { useEffect, useState } from 'react';
-import { Image, ImageProps, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Image, ImageProps, SafeAreaView, View } from 'react-native';
 import { useRecoilValue } from 'recoil';
 
 import {
@@ -19,62 +19,11 @@ import {
 } from '@ui-kitten/components';
 
 import { ClassAppointmentNavigationProp, ClassAppointmentRoute } from '../../../constants';
+import useSocialShareButton from '../../../hooks/useSocialShareButton';
 import { userState } from '../../../store/user';
 import { ClassBooking } from '../Trainers/types';
+import styles from './styles';
 import findClosestAvailableClassDate from './utils';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  layoutContainer: {
-    flex: 1,
-    padding: 24,
-  },
-  text: {
-    marginTop: 20,
-  },
-  footerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  footerControl: {
-    marginHorizontal: 6,
-    width: '40%',
-  },
-  name: {
-    marginTop: 5,
-  },
-  alignCenter: {
-    alignItems: 'center',
-  },
-  image: { width: 150, height: 150, borderRadius: 100 },
-  divider: {
-    marginVertical: 20,
-  },
-  spinner: { justifyContent: 'center', alignItems: 'center', marginTop: '70%' },
-  timeSelector: { marginTop: 20 },
-  selectedDateText: {
-    textAlign: 'center',
-  },
-  backdrop: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modal: {
-    width: '80%',
-  },
-  modalText: {
-    textAlign: 'center',
-  },
-  modalButton: {
-    marginTop: 16,
-  },
-  alreadyEnrolled: {
-    marginTop: 16,
-    textAlign: 'center',
-  },
-});
 
 interface ClassAppointmentNavigationProps {
   route: ClassAppointmentRoute;
@@ -85,6 +34,7 @@ const BackIcon = (props: Partial<ImageProps> | undefined) => <Icon {...props} na
 
 const ClassAppointment = ({ navigation, route }: ClassAppointmentNavigationProps) => {
   const user = useRecoilValue(userState);
+  const SocialShareButton = useSocialShareButton();
 
   const { classInfo } = route.params;
 
@@ -223,9 +173,17 @@ const ClassAppointment = ({ navigation, route }: ClassAppointmentNavigationProps
                 <Text style={styles.modalText} category="s1">
                   Time: {classInfo.dateAndTime}
                 </Text>
-                <Button status="success" style={styles.modalButton} onPress={() => setShowModal(false)}>
-                  DISMISS
-                </Button>
+                <View style={styles.modalButtonsContainer}>
+                  <Button size="small" status="success" style={styles.modalButton} onPress={() => setShowModal(false)}>
+                    DISMISS
+                  </Button>
+                  <SocialShareButton
+                    styles={styles.modalButton}
+                    options={{
+                      message: `I have just signed up for a ${classInfo.name} class!`,
+                    }}
+                  />
+                </View>
               </Card>
             </Modal>
 
@@ -265,7 +223,7 @@ const ClassAppointment = ({ navigation, route }: ClassAppointmentNavigationProps
                 onPress={bookTrainingSession}
                 style={styles.footerControl}
                 size="small">
-                BOOK
+                SIGN UP
               </Button>
             </View>
           </Layout>

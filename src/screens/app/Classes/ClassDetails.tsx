@@ -31,10 +31,17 @@ const styles = StyleSheet.create({
   },
   alignCenter: {
     alignItems: 'center',
+    textAlign: 'center',
   },
   image: { width, height: 200, borderRadius: 0 },
   divider: {
     marginVertical: 16,
+  },
+
+  bookSession: {
+    marginHorizontal: 50,
+    marginTop: 30,
+    marginBottom: 20,
   },
 });
 
@@ -84,21 +91,18 @@ const ClassDetails = ({ navigation, route }: ClassDetailsNavigationProps) => {
 
             <Divider style={styles.divider} />
 
-            <Text category="s1">{classInfo.dateAndTime}</Text>
+            <Text category="s1" style={styles.alignCenter}>
+              {classInfo.dateAndTime}
+            </Text>
 
-            <View style={styles.footerContainer}>
-              <Button style={styles.footerControl} size="small" status="basic">
-                CANCEL
-              </Button>
-              <Button
-                style={styles.footerControl}
-                size="small"
-                onPress={() => {
-                  navigation.navigate('ClassAppointment', { classInfo });
-                }}>
-                ACCEPT
-              </Button>
-            </View>
+            <Button
+              onPress={() => {
+                navigation.navigate('ClassAppointment', { classInfo });
+              }}
+              style={styles.bookSession}
+              size="small">
+              SIGN UP FOR THIS CLASS
+            </Button>
           </ScrollView>
         </Layout>
       </SafeAreaView>

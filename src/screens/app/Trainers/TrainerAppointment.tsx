@@ -24,6 +24,7 @@ import { DateTime, Settings } from 'luxon';
 import { OutputSlot, getSlots } from 'slot-calculator';
 
 import { TrainerAppointmentNavigationProp, TrainerAppointmentRoute } from '../../../constants';
+import useSocialShareButton from '../../../hooks/useSocialShareButton';
 import { userState } from '../../../store/user';
 import findClosestAvailableClassDate from '../Classes/utils';
 import { parseTime } from './helpers';
@@ -74,9 +75,16 @@ const styles = StyleSheet.create({
   },
   modalText: {
     textAlign: 'center',
+    marginBottom: 10,
   },
   modalButton: {
-    marginTop: 16,
+    marginHorizontal: 8,
+  },
+  modalButtonsContainer: {
+    marginTop: 5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
@@ -89,6 +97,7 @@ const BackIcon = (props: Partial<ImageProps> | undefined) => <Icon {...props} na
 
 const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationProps) => {
   const user = useRecoilValue(userState);
+  const SocialShareButton = useSocialShareButton();
 
   const { trainer } = route.params;
 
@@ -243,15 +252,26 @@ const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationP
                 <Text style={styles.modalText} category="s1">
                   Time: {bookedTime}
                 </Text>
-                <Button
-                  status="success"
-                  style={styles.modalButton}
-                  onPress={() => {
-                    setSelectedIndex(new IndexPath(0));
-                    setShowModal(false);
-                  }}>
-                  DISMISS
-                </Button>
+
+                <View style={styles.modalButtonsContainer}>
+                  <Button
+                    size="small"
+                    status="success"
+                    style={styles.modalButton}
+                    onPress={() => {
+                      setSelectedIndex(new IndexPath(0));
+                      setShowModal(false);
+                    }}>
+                    DISMISS
+                  </Button>
+
+                  <SocialShareButton
+                    styles={styles.modalButton}
+                    options={{
+                      message: `I have just signed up for a training session with ${trainer.name}!`,
+                    }}
+                  />
+                </View>
               </Card>
             </Modal>
 

@@ -9,6 +9,7 @@ import { useStripe } from '@stripe/stripe-react-native';
 import { Button, Card, Icon, Layout, Modal, Spinner, Text, TopNavigation } from '@ui-kitten/components';
 
 import useFetchData from '../../../hooks/useFetchData';
+import useSocialShareButton from '../../../hooks/useSocialShareButton';
 import { userState } from '../../../store/user';
 import styles from './styles';
 import { Product } from './types';
@@ -17,11 +18,13 @@ const Shop = (): React.ReactElement => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const user = useRecoilValue(userState);
 
+  const SocialShareButton = useSocialShareButton();
+
   const [products, loading] = useFetchData<Product>('products');
 
   const [cart, setCart] = useState<Product[]>([]);
   const [error, setError] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
 
   const userRef = firestore().doc(`users/${user?.uid}`);
 
@@ -73,13 +76,14 @@ const Shop = (): React.ReactElement => {
         };
 
         await firestore().collection('usersPurhases').add(doc);
+        setVisible(true);
       }
     } catch (e) {
-      setError(true);
       console.error(e);
+      setError(true);
+      setVisible(true);
     } finally {
       setCart([]);
-      setVisible(true);
     }
   };
 
@@ -140,9 +144,18 @@ const Shop = (): React.ReactElement => {
       <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={closeModal}>
         <Card style={styles.modalCard} disabled={true}>
           <Text category="h6">{error ? 'Your purchase has failed! 🤯' : 'Your purchase was successfull! 😻'}</Text>
-          <Button style={styles.modalButton} status={error ? 'basic' : 'info'} onPress={closeModal}>
+          <Button size="small" style={styles.modalButton} status={error ? 'basic' : 'success'} onPress={closeModal}>
             DISMISS
           </Button>
+
+          {!error && (
+            <SocialShareButton
+              styles={styles.modalButton}
+              options={{
+                message: `Check out all the cool things you can buy in this gym!`,
+              }}
+            />
+          )}
         </Card>
       </Modal>
     </Layout>
