@@ -15,6 +15,7 @@ interface GymClass {
 
 interface GymClassWidthoutRefs {
   name: string;
+  imageUrl: string;
   dateAndTime: string;
   location: string;
   instructor: string;

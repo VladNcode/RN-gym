@@ -68,7 +68,12 @@ const ClassDetails = ({ navigation, route }: ClassDetailsNavigationProps) => {
         <Layout style={styles.layoutContainer} level="1">
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.alignCenter}>
-              <Image source={require('../../../assets/icon.png')} style={styles.image} />
+              <Image
+                source={{
+                  uri: classInfo.imageUrl,
+                }}
+                style={styles.image}
+              />
 
               <Text style={styles.name} category="h4">
                 {classInfo.name}

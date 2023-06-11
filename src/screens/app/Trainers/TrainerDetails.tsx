@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     textAlign: 'center',
   },
-  image: { width: 150, height: 150, borderRadius: 100 },
+  image: { width: 200, height: 200, borderRadius: 100 },
   divider: {
     marginVertical: 20,
   },
@@ -66,7 +66,7 @@ const TrainerDetail = ({ navigation, route }: TrainerDetailsNavigationProps) => 
         <Layout style={styles.layoutContainer} level="1">
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.alignCenter}>
-              <Image source={require('../../../assets/icon.png')} style={styles.image} />
+              <Image source={{ uri: trainer.imageUrl }} style={styles.image} />
               <Text style={styles.name} category="h6">
                 Level {category} trainer
               </Text>

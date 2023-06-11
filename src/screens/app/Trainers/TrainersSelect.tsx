@@ -66,22 +66,16 @@ const TrainersSelect = ({ navigation, route }: TrainersSelectNavigationProps) =>
     );
   };
 
-  const ItemImage = (props: Partial<ImageProps> | undefined) => {
+  const ItemImage = (uri: string) => (props: Partial<ImageProps> | undefined) => {
     const { style } = props || {};
-    return (
-      <Avatar
-        {...props}
-        style={[style, styles.itemImage as { tintColor: undefined }]}
-        source={require('../../../assets/icon.png')}
-      />
-    );
+    return <Avatar {...props} style={[style, styles.itemImage as { tintColor: undefined }]} source={{ uri }} />;
   };
 
   const renderItem = ({ item }: { item: TrainerProfile }) => (
     <ListItem
       title={item.name}
       description={item.shortDescription}
-      accessoryLeft={ItemImage}
+      accessoryLeft={ItemImage(item.imageUrl)}
       accessoryRight={renderItemAccessory(item)}
     />
   );

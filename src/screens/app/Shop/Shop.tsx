@@ -1,12 +1,12 @@
 import firestore from '@react-native-firebase/firestore';
 import React, { useMemo, useState } from 'react';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRecoilValue } from 'recoil';
 
 import { useStripe } from '@stripe/stripe-react-native';
-import { Button, Card, Icon, Layout, Modal, Spinner, Text, TopNavigation } from '@ui-kitten/components';
+import { Button, Card, Layout, Modal, Spinner, Text, TopNavigation } from '@ui-kitten/components';
 
 import useFetchData from '../../../hooks/useFetchData';
 import useSocialShareButton from '../../../hooks/useSocialShareButton';
@@ -24,7 +24,7 @@ const Shop = (): React.ReactElement => {
 
   const [cart, setCart] = useState<Product[]>([]);
   const [error, setError] = useState(false);
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   const userRef = firestore().doc(`users/${user?.uid}`);
 
@@ -90,9 +90,8 @@ const Shop = (): React.ReactElement => {
   const renderMerchandiseCard = ({ item }: { item: Product }) => (
     <Card style={styles.itemCard} key={item.id}>
       <View style={styles.cardContainer}>
-        <View style={styles.cardImageContainer}>
-          <Icon name="shopping-bag" width={60} height={60} fill="#8F9BB3" />
-        </View>
+        <Image source={{ uri: item.imageUrl }} style={styles.image} />
+
         <View style={styles.cardTextContainer}>
           <Text category="h6">{item.name}</Text>
           <Text category="s1">{item.description}</Text>

@@ -4,6 +4,7 @@ interface Product {
   image: string;
   price: string;
   id: string;
+  imageUrl: string;
 }
 
 export type { Product };

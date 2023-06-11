@@ -14,11 +14,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
-  cardImageContainer: {
+
+  image: {
+    width: 100,
+    height: 100,
     borderRadius: 60,
-    backgroundColor: '#F7F9FC',
     marginRight: 16,
-    padding: 12,
   },
   cardTextContainer: { flex: 1 },
   cardPrice: { marginTop: 16 },

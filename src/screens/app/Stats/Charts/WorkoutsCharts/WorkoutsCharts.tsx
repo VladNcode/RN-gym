@@ -7,7 +7,6 @@ import { Icon, Layout, Spinner, Text, TopNavigation, TopNavigationAction } from 
 import { StatsMeasurmentsChartsNavigationProp } from '../../../../../constants';
 import useFetchData from '../../../../../hooks/useFetchData';
 import { getFormattedDateFromSeconds } from '../../../Home/Home';
-import { FirebaseWeightData } from '../../MeasurementsForm/MeasurementsForm';
 import { FirebaseWorkout } from '../../WorkoutsForm/WorkoutsForm';
 
 const { width } = Dimensions.get('window');

@@ -10,6 +10,7 @@ export interface TrainerProfile {
   id: string;
   availabilityDays: [0, 1, 2, 3, 4, 5, 6, 7];
   availabilityHours: [number, number];
+  imageUrl: string;
 }
 
 export interface TrainerBooking {
