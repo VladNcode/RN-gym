@@ -22,10 +22,9 @@ import {
 } from '@ui-kitten/components';
 import { DateTime } from 'luxon';
 
-import { RootDrawerParamsList } from '../../../constants';
+import { RootTabParamsList } from '../../../constants';
 import useSnapshot from '../../../hooks/useSnapshot';
 import { userState } from '../../../store/user';
-import shareOnSocialMedia from '../../../utils/shareOnSocialMedia';
 import { FirebaseClassBooking, FirebaseTrainerBooking } from '../Trainers/types';
 import styles from './styles';
 
@@ -33,6 +32,7 @@ const getFormattedDateFromSeconds = (seconds: number) =>
   DateTime.fromSeconds(seconds, { zone: 'Europe/Kyiv' }).toFormat('dd/MM/yyyy');
 
 const MenuIcon = (props: Partial<ImageProps> | undefined): IconElement => <Icon {...props} name="menu-outline" />;
+const PlusIcon = (props: Partial<ImageProps> | undefined): IconElement => <Icon {...props} name="plus-outline" />;
 
 const OpenMenuAction = (openMenu: () => void): React.ReactElement => (
   <TopNavigationAction onPress={openMenu} icon={MenuIcon} />
@@ -60,7 +60,7 @@ const LogoutIcon = (props: Partial<ImageProps> | undefined): IconElement => (
 
 const Home = (): React.ReactElement => {
   const user = useRecoilValue(userState);
-  const navigation = useNavigation<DrawerNavigationProp<RootDrawerParamsList>>();
+  const navigation = useNavigation<DrawerNavigationProp<RootTabParamsList>>();
   const userRef = firestore().doc(`users/${user?.uid}`);
 
   const trainerBookingsQuery = firestore()
@@ -188,7 +188,19 @@ const Home = (): React.ReactElement => {
                     </View>
                   </>
                 ) : (
-                  <Text category="h6">No upcoming class sessions!</Text>
+                  <View style={styles.alignCenter}>
+                    <Text category="h6">No upcoming class sessions!</Text>
+                    <Button
+                      appearance="ghost"
+                      accessoryLeft={PlusIcon}
+                      style={styles.bookButton}
+                      size="small"
+                      onPress={() => {
+                        navigation.navigate('TrainersScreen');
+                      }}>
+                      Book a training session!
+                    </Button>
+                  </View>
                 )}
               </Card>
 
@@ -210,11 +222,22 @@ const Home = (): React.ReactElement => {
                     </View>
                   </>
                 ) : (
-                  <Text category="h6">No upcoming class sessions</Text>
+                  <View style={styles.alignCenter}>
+                    <Text category="h6">No upcoming class sessions</Text>
+                    <Button
+                      appearance="ghost"
+                      accessoryLeft={PlusIcon}
+                      style={styles.bookButton}
+                      size="small"
+                      onPress={() => {
+                        navigation.navigate('ClassesScreen');
+                      }}>
+                      Sign up for a class!
+                    </Button>
+                  </View>
                 )}
               </Card>
             </View>
-            <Button onPress={() => shareOnSocialMedia({ message: 'Hello world!', title: 'Suh dude' })}>Share</Button>
           </>
         )}
       </SafeAreaView>

@@ -17,4 +17,8 @@ export const styles = StyleSheet.create({
   button: {
     marginTop: 46,
   },
+  indicator: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

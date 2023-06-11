@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, ImageProps, TouchableWithoutFeedback, View } from 'react-native';
 
-import { Button, Icon, Input, Layout, Text } from '@ui-kitten/components';
+import { Button, Icon, Input, Layout, Spinner, Text } from '@ui-kitten/components';
 
 import ErrorCaption from '../../../components/ErrorCaption';
 import FooterLink from '../../../components/FooterLink';
@@ -15,11 +15,17 @@ interface SignInState {
   password: string;
 }
 
+const LoadingIndicator = (props: Partial<ImageProps> | undefined): React.ReactElement => (
+  <View style={[props?.style, styles.indicator]}>
+    <Spinner size="small" />
+  </View>
+);
+
 export const SignIn = React.memo(({ navigation }: { navigation: SignInNavigationProp }) => {
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitted },
+    formState: { errors, isSubmitted, isSubmitting },
   } = useForm<SignInState>({
     defaultValues: {
       email: '',
@@ -122,7 +128,12 @@ export const SignIn = React.memo(({ navigation }: { navigation: SignInNavigation
         />
       </View>
 
-      <Button style={styles.button} onPress={handleSubmit(onSubmit)}>
+      <Button
+        style={styles.button}
+        disabled={isSubmitting}
+        appearance={isSubmitting ? 'outline' : 'filled'}
+        accessoryLeft={isSubmitting ? LoadingIndicator : undefined}
+        onPress={handleSubmit(onSubmit)}>
         Log in
       </Button>
 

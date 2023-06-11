@@ -33,6 +33,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   spinner: { justifyContent: 'center', alignItems: 'center', marginTop: '70%' },
+  bookButton: {
+    marginTop: 16,
+  },
+  alignCenter: {
+    alignItems: 'center',
+  },
 });
 
 export default styles;

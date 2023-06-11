@@ -5,7 +5,7 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import { GymClassWidthoutRefs } from '../screens/app/Classes/types';
-import { GymLocation } from '../screens/app/Map/types';
+import { GymInfo } from '../screens/app/Map/types';
 import { TrainerProfile } from '../screens/app/Trainers/types';
 
 export type RootStackParamsList = {
@@ -23,7 +23,7 @@ export type TrainersStackParamsList = {
 
 export type LocationsStackParamsList = {
   SelectLocations: undefined;
-  Map: { gymInfo: GymLocation };
+  Map: { gymInfo: GymInfo };
 };
 
 export type ClassesStackParamsList = {

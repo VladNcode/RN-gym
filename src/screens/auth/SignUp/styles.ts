@@ -35,4 +35,8 @@ export const styles = StyleSheet.create({
     marginTop: 24,
   },
   checkboxError: { marginTop: 6 },
+  indicator: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, ImageProps, Linking, ScrollView, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 
-import { Button, CheckBox, Icon, Input, Layout, Text } from '@ui-kitten/components';
+import { Button, CheckBox, Icon, Input, Layout, Spinner, Text } from '@ui-kitten/components';
 
 import ErrorCaption from '../../../components/ErrorCaption';
 import FooterLink from '../../../components/FooterLink';
@@ -23,13 +23,19 @@ type SignUpState = {
   confirmPassword: string;
 };
 
+const LoadingIndicator = (props: Partial<ImageProps> | undefined): React.ReactElement => (
+  <View style={[props?.style, styles.indicator]}>
+    <Spinner size="small" />
+  </View>
+);
+
 export const SignUp = React.memo(({ navigation }: { navigation: SignUpNavigationProp }) => {
   const [agreed, setAgreed] = useState(false);
 
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitted },
+    formState: { errors, isSubmitted, isSubmitting },
     watch,
   } = useForm<SignUpState>({
     defaultValues: {
@@ -250,7 +256,12 @@ export const SignUp = React.memo(({ navigation }: { navigation: SignUpNavigation
           )}
         </View>
 
-        <Button style={styles.button} onPress={handleSubmit(onSubmit)}>
+        <Button
+          style={styles.button}
+          disabled={isSubmitting}
+          appearance={isSubmitting ? 'outline' : 'filled'}
+          accessoryLeft={isSubmitting ? LoadingIndicator : undefined}
+          onPress={handleSubmit(onSubmit)}>
           Submit
         </Button>
 
