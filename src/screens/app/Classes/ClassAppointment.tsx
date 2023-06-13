@@ -12,7 +12,6 @@ import {
   Layout,
   Modal,
   NativeDateService,
-  Spinner,
   Text,
   TopNavigation,
   TopNavigationAction,
@@ -21,6 +20,7 @@ import {
 import { ClassAppointmentNavigationProp, ClassAppointmentRoute } from '../../../constants';
 import useSocialShareButton from '../../../hooks/useSocialShareButton';
 import { userState } from '../../../store/user';
+import getCorrectTimeStartOfDay from '../../../utils/getCorrectTime';
 import { ClassBooking } from '../Trainers/types';
 import styles from './styles';
 import findClosestAvailableClassDate from './utils';
@@ -50,7 +50,6 @@ const ClassAppointment = ({ navigation, route }: ClassAppointmentNavigationProps
 
   const [date, setDate] = useState(startDate);
   const [data, setData] = useState<ClassBooking>();
-  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const formatDateService = new NativeDateService('en', { format: 'DD/MM/YYYY' });
@@ -64,40 +63,17 @@ const ClassAppointment = ({ navigation, route }: ClassAppointmentNavigationProps
     const subscriber = firestore()
       .collection('classBookings')
       .where('classId', '==', classRef)
-      .where('date', '==', date)
+      .where('date', '==', getCorrectTimeStartOfDay(date))
       .limit(1)
       .onSnapshot(querySnapshot => {
         const items: ClassBooking[] = [];
 
-        querySnapshot.forEach(documentSnapshot => {
+        querySnapshot?.forEach(documentSnapshot => {
           items.push(documentSnapshot?.data() as ClassBooking);
         });
 
         setData({ ...items[0], id: items[0]?.id });
       });
-
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        const classesDocs = (
-          await firestore()
-            .collection('classBookings')
-            .where('classId', '==', classRef)
-            .where('date', '==', date)
-            .limit(1)
-            .get()
-        ).docs;
-
-        setData({ ...classesDocs[0]?.data(), id: classesDocs[0]?.id } as ClassBooking);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
 
     return () => {
       subscriber();
@@ -145,89 +121,86 @@ const ClassAppointment = ({ navigation, route }: ClassAppointmentNavigationProps
     <Layout style={styles.container} level="1">
       <SafeAreaView style={styles.container}>
         <TopNavigation title="Book a training session" alignment="center" accessoryLeft={BackAction} />
-        {loading ? (
-          <View style={styles.spinner}>
-            <Spinner size="giant" />
+
+        <Layout style={styles.layoutContainer} level="1">
+          <View style={styles.alignCenter}>
+            <Image source={require('../../../assets/icon.png')} style={styles.image} />
+
+            <Text style={styles.name} category="h4">
+              {classInfo.name}
+            </Text>
           </View>
-        ) : (
-          <Layout style={styles.layoutContainer} level="1">
-            <View style={styles.alignCenter}>
-              <Image source={require('../../../assets/icon.png')} style={styles.image} />
 
-              <Text style={styles.name} category="h4">
-                {classInfo.name}
+          <Divider style={styles.divider} />
+
+          <Modal
+            style={styles.modal}
+            visible={showModal}
+            backdropStyle={styles.backdrop}
+            onBackdropPress={() => setShowModal(false)}>
+            <Card disabled={true}>
+              <Text style={styles.modalText} category="h6">
+                😻 Your signed up for a {classInfo.name} class!
               </Text>
-            </View>
-
-            <Divider style={styles.divider} />
-
-            <Modal
-              style={styles.modal}
-              visible={showModal}
-              backdropStyle={styles.backdrop}
-              onBackdropPress={() => setShowModal(false)}>
-              <Card disabled={true}>
-                <Text style={styles.modalText} category="h6">
-                  😻 Your signed up for a {classInfo.name} class!
-                </Text>
-                <Text style={styles.modalText} category="s1">
-                  Time: {classInfo.dateAndTime}
-                </Text>
-                <View style={styles.modalButtonsContainer}>
-                  <Button size="small" status="success" style={styles.modalButton} onPress={() => setShowModal(false)}>
-                    DISMISS
-                  </Button>
-                  <SocialShareButton
-                    styles={styles.modalButton}
-                    options={{
-                      message: `I have just signed up for a ${classInfo.name} class!`,
-                    }}
-                  />
-                </View>
-              </Card>
-            </Modal>
-
-            <Text style={styles.selectedDateText} category="h6">{`Selected date: ${formattedDate}`}</Text>
-            <Text
-              style={styles.selectedDateText}
-              category="h6">{`${usersEnrolledCount}/${classInfo.limit} participants`}</Text>
-
-            <Datepicker
-              dateService={formatDateService}
-              style={styles.timeSelector}
-              min={now}
-              max={new Date(now.getFullYear(), now.getMonth() + 3, now.getDate())}
-              filter={filter}
-              date={date}
-              onSelect={setDate}
-            />
-
-            {alreadyBooken && (
-              <Text style={styles.alreadyEnrolled} category="label">
-                You have already enrolled for this day
+              <Text style={styles.modalText} category="s1">
+                Time: {classInfo.dateAndTime}
               </Text>
-            )}
+              <View style={styles.modalButtonsContainer}>
+                <Button size="small" status="success" style={styles.modalButton} onPress={() => setShowModal(false)}>
+                  DISMISS
+                </Button>
+                <SocialShareButton
+                  styles={styles.modalButton}
+                  options={{
+                    message: `I have just signed up for a ${classInfo.name} class!`,
+                  }}
+                />
+              </View>
+            </Card>
+          </Modal>
 
-            {data && classInfo.limit === usersEnrolledCount && !alreadyBooken && (
-              <Text category="h6">No slots available for this day</Text>
-            )}
+          <Text style={styles.selectedDateText} category="h6">{`Selected date: ${formattedDate}`}</Text>
+          <Text
+            style={styles.selectedDateText}
+            category="h6">{`${usersEnrolledCount}/${classInfo.limit} participants`}</Text>
 
-            <Divider style={styles.divider} />
+          <Datepicker
+            dateService={formatDateService}
+            style={styles.timeSelector}
+            min={now}
+            max={new Date(now.getFullYear(), now.getMonth() + 3, now.getDate())}
+            filter={filter}
+            date={date}
+            onSelect={d => {
+              setDate(getCorrectTimeStartOfDay(d));
+            }}
+          />
 
-            <View style={styles.footerContainer}>
-              <Button style={styles.footerControl} size="small" status="basic" onPress={navigateBack}>
-                CANCEL
-              </Button>
-              <Button
-                disabled={!date || classInfo.limit === usersEnrolledCount || !!alreadyBooken}
-                onPress={bookTrainingSession}
-                style={styles.footerControl}
-                size="small">
-                SIGN UP
-              </Button>
-            </View>
-          </Layout>
-        )}
+          {alreadyBooken && (
+            <Text style={styles.alreadyEnrolled} category="label">
+              You have already enrolled for this day
+            </Text>
+          )}
+
+          {data && classInfo.limit === usersEnrolledCount && !alreadyBooken && (
+            <Text category="h6">No slots available for this day</Text>
+          )}
+
+          <Divider style={styles.divider} />
+
+          <View style={styles.footerContainer}>
+            <Button style={styles.footerControl} size="small" status="basic" onPress={navigateBack}>
+              CANCEL
+            </Button>
+            <Button
+              disabled={!date || classInfo.limit === usersEnrolledCount || !!alreadyBooken}
+              onPress={bookTrainingSession}
+              style={styles.footerControl}
+              size="small">
+              SIGN UP
+            </Button>
+          </View>
+        </Layout>
       </SafeAreaView>
     </Layout>
   );

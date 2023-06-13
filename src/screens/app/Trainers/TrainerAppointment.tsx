@@ -15,7 +15,6 @@ import {
   NativeDateService,
   Select,
   SelectItem,
-  Spinner,
   Text,
   TopNavigation,
   TopNavigationAction,
@@ -26,6 +25,7 @@ import { OutputSlot, getSlots } from 'slot-calculator';
 import { TrainerAppointmentNavigationProp, TrainerAppointmentRoute } from '../../../constants';
 import useSocialShareButton from '../../../hooks/useSocialShareButton';
 import { userState } from '../../../store/user';
+import getCorrectTimeStartOfDay from '../../../utils/getCorrectTime';
 import findClosestAvailableClassDate from '../Classes/utils';
 import { parseTime } from './helpers';
 import { TrainerBooking } from './types';
@@ -114,7 +114,6 @@ const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationP
   const [selectedIndex, setSelectedIndex] = useState<IndexPath | IndexPath[]>(new IndexPath(0));
   const [selectData, setSelectData] = useState<string[]>([]);
   const [data, setData] = useState<TrainerBooking[]>([]);
-  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [bookedTime, setBookedTime] = useState<string>('');
 
@@ -126,7 +125,7 @@ const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationP
     const subscriber = firestore()
       .collection('trainerBookings')
       .where('trainerId', '==', trainerRef)
-      .where('date', '==', date)
+      .where('date', '==', getCorrectTimeStartOfDay(date))
       .onSnapshot(querySnapshot => {
         const items: TrainerBooking[] = [];
 
@@ -136,28 +135,6 @@ const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationP
 
         setData(items);
       });
-
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        const classesDocs = (
-          await firestore()
-            .collection('trainerBookings')
-            .where('trainerId', '==', trainerRef)
-            .where('date', '==', date)
-            .get()
-        ).docs;
-
-        setData(classesDocs.map(doc => doc.data() as TrainerBooking));
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
 
     return () => {
       subscriber();
@@ -221,100 +198,97 @@ const TrainerAppointment = ({ navigation, route }: TrainerAppointmentNavigationP
     <Layout style={styles.container} level="1">
       <SafeAreaView style={styles.container}>
         <TopNavigation title="Book a training session" alignment="center" accessoryLeft={BackAction} />
-        {loading ? (
-          <View style={styles.spinner}>
-            <Spinner size="giant" />
+
+        <Layout style={styles.layoutContainer} level="1">
+          <View style={styles.alignCenter}>
+            <Image source={{ uri: trainer.imageUrl }} style={styles.image} />
+
+            <Text style={styles.name} category="h4">
+              {trainer.name}
+            </Text>
           </View>
-        ) : (
-          <Layout style={styles.layoutContainer} level="1">
-            <View style={styles.alignCenter}>
-              <Image source={{ uri: trainer.imageUrl }} style={styles.image} />
 
-              <Text style={styles.name} category="h4">
-                {trainer.name}
+          <Divider style={styles.divider} />
+
+          <Modal
+            style={styles.modal}
+            visible={showModal}
+            backdropStyle={styles.backdrop}
+            onBackdropPress={() => setShowModal(false)}>
+            <Card disabled={true}>
+              <Text style={styles.modalText} category="h6">
+                Your session with {trainer.name} has been booked! 😻
               </Text>
-            </View>
+              <Text style={styles.modalText} category="s1">
+                Date: {formattedDate}
+              </Text>
+              <Text style={styles.modalText} category="s1">
+                Time: {bookedTime}
+              </Text>
 
-            <Divider style={styles.divider} />
+              <View style={styles.modalButtonsContainer}>
+                <Button
+                  size="small"
+                  status="success"
+                  style={styles.modalButton}
+                  onPress={() => {
+                    setSelectedIndex(new IndexPath(0));
+                    setShowModal(false);
+                  }}>
+                  DISMISS
+                </Button>
 
-            <Modal
-              style={styles.modal}
-              visible={showModal}
-              backdropStyle={styles.backdrop}
-              onBackdropPress={() => setShowModal(false)}>
-              <Card disabled={true}>
-                <Text style={styles.modalText} category="h6">
-                  Your session with {trainer.name} has been booked! 😻
-                </Text>
-                <Text style={styles.modalText} category="s1">
-                  Date: {formattedDate}
-                </Text>
-                <Text style={styles.modalText} category="s1">
-                  Time: {bookedTime}
-                </Text>
+                <SocialShareButton
+                  styles={styles.modalButton}
+                  options={{
+                    message: `I have just signed up for a training session with ${trainer.name}!`,
+                  }}
+                />
+              </View>
+            </Card>
+          </Modal>
 
-                <View style={styles.modalButtonsContainer}>
-                  <Button
-                    size="small"
-                    status="success"
-                    style={styles.modalButton}
-                    onPress={() => {
-                      setSelectedIndex(new IndexPath(0));
-                      setShowModal(false);
-                    }}>
-                    DISMISS
-                  </Button>
+          <Text style={styles.selectedDateText} category="h6">{`Selected date: ${formattedDate}`}</Text>
 
-                  <SocialShareButton
-                    styles={styles.modalButton}
-                    options={{
-                      message: `I have just signed up for a training session with ${trainer.name}!`,
-                    }}
-                  />
-                </View>
-              </Card>
-            </Modal>
+          <Datepicker
+            // dateService={formatDateService}
+            style={styles.timeSelector}
+            min={now}
+            max={new Date(now.getFullYear(), now.getMonth() + 3, now.getDate())}
+            filter={filter}
+            date={date}
+            onSelect={d => {
+              setDate(getCorrectTimeStartOfDay(d));
+            }}
+          />
 
-            <Text style={styles.selectedDateText} category="h6">{`Selected date: ${formattedDate}`}</Text>
+          <View style={styles.timeSelector}>
+            {selectData.length ? (
+              <Select value={displayValue} selectedIndex={selectedIndex} onSelect={setSelectedIndex}>
+                {selectData.map((slot: string) => {
+                  return <SelectItem key={slot} title={slot} />;
+                })}
+              </Select>
+            ) : (
+              <Text category="h6">No slots available for this day</Text>
+            )}
+          </View>
 
-            <Datepicker
-              dateService={formatDateService}
-              style={styles.timeSelector}
-              min={now}
-              max={new Date(now.getFullYear(), now.getMonth() + 3, now.getDate())}
-              filter={filter}
-              date={date}
-              onSelect={setDate}
-            />
+          <Divider style={styles.divider} />
 
-            <View style={styles.timeSelector}>
-              {selectData.length ? (
-                <Select value={displayValue} selectedIndex={selectedIndex} onSelect={setSelectedIndex}>
-                  {selectData.map((slot: string) => {
-                    return <SelectItem key={slot} title={slot} />;
-                  })}
-                </Select>
-              ) : (
-                <Text category="h6">No slots available for this day</Text>
-              )}
-            </View>
-
-            <Divider style={styles.divider} />
-
-            <View style={styles.footerContainer}>
-              <Button style={styles.footerControl} size="small" status="basic" onPress={navigateBack}>
-                CANCEL
-              </Button>
-              <Button
-                disabled={!displayValue || !date}
-                onPress={bookTrainingSession}
-                style={styles.footerControl}
-                size="small">
-                BOOK
-              </Button>
-            </View>
-          </Layout>
-        )}
+          <View style={styles.footerContainer}>
+            <Button style={styles.footerControl} size="small" status="basic" onPress={navigateBack}>
+              CANCEL
+            </Button>
+            <Button
+              disabled={!displayValue || !date}
+              onPress={bookTrainingSession}
+              style={styles.footerControl}
+              size="small">
+              BOOK
+            </Button>
+          </View>
+        </Layout>
       </SafeAreaView>
     </Layout>
   );
