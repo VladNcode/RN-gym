@@ -1,11 +1,14 @@
+import firestore from '@react-native-firebase/firestore';
 import { Dimensions, ImageProps, SafeAreaView, StyleSheet, View } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useRecoilValue } from 'recoil';
 
 import { Icon, Layout, Spinner, Text, TopNavigation, TopNavigationAction } from '@ui-kitten/components';
 
 import { StatsMeasurmentsChartsNavigationProp } from '../../../../../constants';
 import useFetchData from '../../../../../hooks/useFetchData';
+import { userState } from '../../../../../store/user';
 import { getFormattedDateFromSeconds } from '../../../Home/Home';
 import { FirebaseWorkout } from '../../WorkoutsForm/WorkoutsForm';
 
@@ -54,14 +57,16 @@ const MeasurementsCharts = ({ navigation }: StatsMeasurmentsChartsNavigationProp
   const navigateBack = () => {
     navigation.goBack();
   };
+  const user = useRecoilValue(userState);
+  const userRef = firestore().doc(`users/${user?.uid}`);
 
   const BackAction = () => <TopNavigationAction icon={BackIcon} onPress={navigateBack} />;
 
-  const [workouts, loading] = useFetchData<Omit<FirebaseWorkout, 'date'> & { date: { seconds: number } }>('workouts', [
-    'date',
-    '>=',
-    new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 30),
-  ]);
+  const [workouts, loading] = useFetchData<Omit<FirebaseWorkout, 'date'> & { date: { seconds: number } }>(
+    'workouts',
+    ['date', '>=', new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 30)],
+    ['userId', '==', userRef],
+  );
 
   console.log(workouts);
 
